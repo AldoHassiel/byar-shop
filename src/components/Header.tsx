@@ -6,7 +6,7 @@ export default function Header() {
     <header className="flex justify-around bg-byar py-4">
       <MenuIcon color="white" size={32} />
       <Link to="/">
-        <h1 className="text-2xl text-white font-bold">ByarShop</h1>
+        <h1 className="text-5xl text-white font-titulo">byarshop</h1>
       </Link>
       <nav className="flex space-x-5">
         <Link to="/productos">
