@@ -20,7 +20,14 @@
     src: url("./assets/fuentes/GlacialIndifference-Italic.otf")
         format("opentype");
     font-weight: 400;
-    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "FuenteLogo";
+    src: url("./assets/fuentes/Logo.woff2") format("opentype");
+    font-weight: 400;
+    font-style: normal;
     font-display: swap;
 }
 
@@ -36,6 +43,7 @@
     --color-fondogris: var(--color-fondogris);
     --color-byarclaro: var(--color-byarclaro);
 
+    --font-titulo: "FuenteLogo";
     --font-heading: "GlacialIndifference", ui-sans-serif, system-ui, sans-serif;
     --font-glacial: "GlacialIndifference", ui-sans-serif, system-ui, sans-serif;
     --font-sans: "GlacialIndifference", ui-sans-serif, system-ui, sans-serif;
