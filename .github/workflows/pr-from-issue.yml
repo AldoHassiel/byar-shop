@@ -1,9 +1,7 @@
 name: Auto-fill PR from Issue
-
 on:
   pull_request:
     types: [opened]
-
 jobs:
   fill-description:
     runs-on: ubuntu-latest
@@ -17,26 +15,26 @@ jobs:
           script: |
             const pr = context.payload.pull_request;
             const branch = pr.head.ref;
-
             const match = branch.match(/(\d+)/);
             if (!match) {
               console.log('No se encontró número de issue en el nombre de la rama.');
               return;
             }
-
             const issueNumber = parseInt(match[1]);
-
             const issue = await github.rest.issues.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
             });
-
             const issueBody = issue.data.body || '_El issue no tiene descripción._';
             const issueTitle = issue.data.title;
 
-            const prBody = `## ${issueTitle}\n\nCloses #${issueNumber}\n\n${issueBody}`;
+            // Marcar todas las tareas como completadas
+            const issueBodyChecked = issueBody
+              .replace(/- \[ \]/g, '- [x]')
+              .replace(/\* \[ \]/g, '* [x]');
 
+            const prBody = `## ${issueTitle}\n\nCloses #${issueNumber}\n\n${issueBodyChecked}`;
             await github.rest.pulls.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
