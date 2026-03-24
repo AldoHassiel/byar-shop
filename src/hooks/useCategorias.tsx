@@ -1,7 +1,7 @@
 import { apiCategorias } from "@/api/categorias.api";
 import type {
     Categorias,
-    CategoriaDTO
+    //CategoriaDTO
 } from "@/types/categorias";
 import { useEffect, useState } from "react";
 
