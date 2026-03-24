@@ -18,7 +18,6 @@ jobs:
             const pr = context.payload.pull_request;
             const branch = pr.head.ref;
 
-            // Busca el número de issue en el nombre de la rama
             const match = branch.match(/(\d+)/);
             if (!match) {
               console.log('No se encontró número de issue en el nombre de la rama.');
@@ -36,11 +35,7 @@ jobs:
             const issueBody = issue.data.body || '_El issue no tiene descripción._';
             const issueTitle = issue.data.title;
 
-            const prBody = `## ${issueTitle}
-
-Closes #${issueNumber}
-
-${issueBody}`;
+            const prBody = `## ${issueTitle}\n\nCloses #${issueNumber}\n\n${issueBody}`;
 
             await github.rest.pulls.update({
               owner: context.repo.owner,
