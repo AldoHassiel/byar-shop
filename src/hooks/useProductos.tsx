@@ -7,7 +7,7 @@ import type {
 } from "@/types/productos";
 import { useEffect, useState } from "react";
 
-export default function useProductos() {
+export default function useProductos(id?: number) {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [producto, setProducto] = useState<ProductoDetallado>();
@@ -89,10 +89,19 @@ export default function useProductos() {
   };
 
   useEffect(() => {
-    const cargar = async () => {
+    const cargarTodos = async () => {
       await obtenerTodos();
     };
-    cargar();
+
+    const cargarUno = async (id: number) => {
+      await obtenerUno(id);
+    };
+
+    if (id) {
+      cargarUno(id);
+    } else {
+      cargarTodos();
+    }
   }, []);
 
   return {
