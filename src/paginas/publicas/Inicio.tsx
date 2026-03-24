@@ -65,23 +65,18 @@ export default function Inicio() {
           <Carousel opts={{ align: "center" }}>
             <CarouselPrevious />
             <CarouselContent>
-              {cargando
-                ? Array.from({ length: 4 }).map((_, i) => (
-                    <CarouselItem
-                      key={i}
-                      className="basis-1/2 md:basis-1/3 lg:basis-1/4"
-                    >
-                      <div className="h-48 bg-gray-200 animate-pulse rounded" />
-                    </CarouselItem>
-                  ))
-                : Array.from({ length: 4 }).map((_, i) => (
-                    <CarouselItem
-                      key={i}
-                      className="basis-1/2 md:basis-1/3 lg:basis-1/4"
-                    >
-                      <TarjetaProducto />
-                    </CarouselItem>
-                  ))}
+              <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <TarjetaProducto />
+              </CarouselItem>
+              <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <TarjetaProducto />
+              </CarouselItem>
+              <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <TarjetaProducto />
+              </CarouselItem>
+              <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <TarjetaProducto />
+              </CarouselItem>
             </CarouselContent>
             <CarouselNext />
           </Carousel>

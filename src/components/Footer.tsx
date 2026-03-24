@@ -1,6 +1,5 @@
 import type { Negocio } from "@/types/negocio";
 import { Instagram, MapPin, Copyright } from "lucide-react";
-import { Link } from "react-router";
 
 interface Props {
   negocio: Negocio;
@@ -17,7 +16,7 @@ export default function Footer({ negocio }: Props) {
         <h2 className="text-white font-bold text-2xl">¡Contáctanos!</h2>
 
         <a
-          href={negocio?.instagram}
+          href={negocio?.instagram ?? "https://www.instagram.com/byar.shop"}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2.5 text-white text-sm"
@@ -34,11 +33,14 @@ export default function Footer({ negocio }: Props) {
         >
           <MapPin size={22} strokeWidth={2.5} className="shrink-0 mt-0.5" />
           <div className="flex flex-col leading-snug">
-            <span>{negocio?.direccion}</span>
+            <span>
+              {negocio?.direccion ?? "Plazuela 27 de Sep frente a la iglesia"}
+            </span>
             <div className="space-x-2">
-              <span>{negocio?.dias_laborales}</span>
+              <span>{negocio?.dias_laborales ?? "Viernes a Domingo"}</span>
               <span>
-                {negocio?.hora_de_apertura} a {negocio?.hora_de_cierre}
+                {negocio?.hora_de_apertura ?? "6:30 PM"} a{" "}
+                {negocio?.hora_de_cierre ?? "10:00 PM"}
               </span>
             </div>
           </div>
