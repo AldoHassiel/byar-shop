@@ -1,10 +1,19 @@
 import useProductos from "@/hooks/useProductos";
+import useMarcas from "@/hooks/useMarca";
 import useCategorias from "@/hooks/useCategorias";
 import {
   Card,
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useState, useEffect } from "react";
 
 export default function Productos() {
@@ -12,7 +21,8 @@ export default function Productos() {
   const [precioMin, setPrecioMin] = useState<number | undefined>();
   const [precioMax, setPrecioMax] = useState<number | undefined>();
   const [idMarca, setIdMarca] = useState<number | undefined>();
-  const { categorias, cargandoCategorias, obtenerCategorias } = useCategorias();
+  const { categorias, /*cargandoCategorias, obtenerCategorias*/ } = useCategorias();
+  const { marcas, /*cargandoMarcas, obtenerMarcas*/ } = useMarcas();
   const [idCategoria, setIdCategoria] = useState<number | undefined>();
 
 
@@ -51,27 +61,51 @@ export default function Productos() {
           }
         />
 
-        <select
-          className="border p-2 rounded"
-          onChange={(e) => setIdMarca(Number(e.target.value) || undefined)}
+        <Select
+          value={idMarca ? String(idMarca) : "all"}
+          onValueChange={(value) =>
+            setIdMarca(value === "all" ? undefined : Number(value))
+          }
         >
-          <option value="">Todas las marcas</option>
-          <option value="1">Nike</option>
-          <option value="2">Adidas</option>
-        </select>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Todas las marcas" />
+          </SelectTrigger>
 
-        <select
-          className="border p-2 rounded"
-          onChange={(e) => setIdCategoria(Number(e.target.value) || undefined)}
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="all">Todas las marcas</SelectItem>
+
+              {marcas.map((marc) => (
+                <SelectItem key={marc.id} value={String(marc.id)}>
+                  {marc.nombre}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={idCategoria ? String(idCategoria) : "all"}
+          onValueChange={(value) =>
+            setIdCategoria(value === "all" ? undefined : Number(value))
+          }
         >
-          <option value="">Todas las categorías</option>
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Todas las categorías" />
+          </SelectTrigger>
 
-          {categorias.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.nombre}
-            </option>
-          ))}
-        </select>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="all">Todas las categorías</SelectItem>
+
+              {categorias.map((cat) => (
+                <SelectItem key={cat.id} value={String(cat.id)}>
+                  {cat.nombre}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
 
       </div>
