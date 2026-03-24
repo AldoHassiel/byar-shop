@@ -19,7 +19,7 @@ export default function useNegocio() {
     };
 
     cargar();
-  });
+  }, []);
 
   return { negocio, cargando };
 }
