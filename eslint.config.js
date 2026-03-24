@@ -32,7 +32,7 @@ export default defineConfig([
       ],
 
       "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-member-access": "warn",
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/no-unsafe-return": "off",
       "@typescript-eslint/no-unsafe-argument": "off",
@@ -42,6 +42,7 @@ export default defineConfig([
 
       "no-console": "off",
       "no-empty": "off",
+      "no-unused-vars": "off",
     },
   },
 ]);
