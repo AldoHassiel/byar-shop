@@ -21,62 +21,64 @@ export default function DetalleProductos() {
 
   return (
     <div className="bg-fondogris px-20 py-10">
-      <article className="bg-white rounded-2xl px-10 py-5">
-        <header className="flex gap-x-10">
+      <section className="grid grid-cols-12 gap-5">
+        <article className="col-span-8 flex gap-x-10 p-5 bg-white rounded-2xl">
           <div>
             <img
               src={producto?.imagen_url}
-              alt="Imagen del productp"
-              width={200}
-              height={200}
+              alt="Imagen del producto"
+              className="w-[400px] h-[400px] object-contain"
             />
           </div>
-          <div>
-            <h1 className="text-4xl">{producto?.nombre}</h1>
-            <span className="text-xl font-bold block mt-2">
-              {producto?.nombre_marca}
-            </span>
-            <data value={producto?.precio} className="text-2xl">
-              MXN {producto?.precio}
-            </data>
-            <div className="flex gap-x-5 mt-2">
-              <ButtonGroup>
-                <Button variant="outline" size="icon">
-                  <MinusIcon />
-                </Button>
-                <Input type="number" className="text-center" />
-                <Button variant="outline" size="icon">
-                  <PlusIcon />
-                </Button>
-              </ButtonGroup>
-              <Button>Agregar al carrito</Button>
+
+          <div className="flex flex-col justify-around">
+            <h1 className="text-4xl mt-5">{producto?.nombre}</h1>
+
+            <div>
+              <p className="font-bold text-2xl mt-5">
+                {producto?.nombre_marca}
+              </p>
+              <data value={producto?.precio} className="text-xl">
+                MXN {producto?.precio}
+              </data>
+
+              <h2 className="font-bold text-xl mt-5">Descripción</h2>
+              <p className="text-xl">{producto?.descripcion}</p>
             </div>
           </div>
-        </header>
-        <footer className="mt-5">
-          <p className="font-bold text-2xl">Descripción</p>
-          <p className="text-xl">{producto?.descripcion}</p>
-        </footer>
-      </article>
+        </article>
+        <div className="col-span-4 bg-white rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <p className="text-center text-xl border-b border-b-gray-500 py-2 mb-5">
+              Stock disponible
+            </p>
+            <p>Hola</p>
+          </div>
+
+          <div>
+            <ButtonGroup className="w-full">
+              <Button variant="outline" size="icon">
+                <MinusIcon />
+              </Button>
+              <Input type="number" value={1} className="text-center" />
+              <Button variant="outline" size="icon">
+                <PlusIcon />
+              </Button>
+            </ButtonGroup>
+
+            <Button className="mt-2 w-full p-5">Agregar al carrito</Button>
+          </div>
+        </div>
+      </section>
 
       <section className="mt-10">
         <h2 className="text-2xl text-gray-500">Seguir viendo</h2>
-        <div className="flex overflow-hidden mt-5">
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-1">
-              <CarouselItem className="pl-1">
-                <TarjetaProducto />
-              </CarouselItem>
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
+        <div className="mt-5 flex gap-5 justify-center">
+          <TarjetaProducto />
+          <TarjetaProducto />
+          <TarjetaProducto />
+          <TarjetaProducto />
+          <TarjetaProducto />
         </div>
       </section>
     </div>
