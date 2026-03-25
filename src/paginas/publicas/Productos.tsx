@@ -1,7 +1,7 @@
 import useProductos from "@/hooks/useProductos";
 import useMarcas from "@/hooks/useMarca";
 import useCategorias from "@/hooks/useCategorias";
-import useSubcategorias from "@/hooks/useSubCategorias";
+import useSubcategorias from "../../hooks/useSubcategorias";
 import {
   Card,
   CardContent,
@@ -47,7 +47,7 @@ export default function Productos() {
     { label: "$2000 - $2500", min: 2000, max: 2500 },
     { label: "$2500 o más", min: 2500, max: undefined },
   ];
-  const [esFavorito, setEsFavorito] = useState(false);
+  const [esFavorito] = useState(false);
 
   useEffect(() => {
     obtenerTodos(
