@@ -73,7 +73,7 @@ export default function Productos() {
     <>
       {/* HEADER */}
       <div className="flex items-center justify-between px-6 py-4">
-        <h1 className="text-4xl not-italic">{titulo}</h1>
+        <h1 className="text-6xl not-italic">{titulo}</h1>
 
         <div className="flex gap-3">
           {/* PRECIOS */}

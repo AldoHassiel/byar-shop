@@ -1,7 +1,6 @@
 @font-face {
     font-family: "GlacialIndifference";
-    src: url("./assets/fuentes/GlacialIndifference-Regular.otf")
-        format("opentype");
+    src: url("./assets/fuentes/GlacialIndifference-Regular.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -17,9 +16,9 @@
 
 @font-face {
     font-family: "GlacialIndifference";
-    src: url("./assets/fuentes/GlacialIndifference-Italic.otf")
-        format("opentype");
+    src: url("./assets/fuentes/GlacialIndifference-Italic.otf") format("opentype");
     font-weight: 400;
+    font-style: italic;
     font-display: swap;
 }
 
@@ -249,10 +248,12 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
         letter-spacing: var(--tracking-normal);
     }
+
     html {
         font-family:
             "GlacialIndifference", ui-sans-serif, system-ui, sans-serif;
