@@ -31,7 +31,10 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
 
   return (
     <article className="bg-white rounded p-5 w-50 flex flex-col min-h-96">
-      <Link to={`/productos/${producto.id}`} className="no-underline flex flex-col flex-1">
+      <Link
+        to={`/productos/${producto.id}`}
+        className="no-underline flex flex-col flex-1"
+      >
         <div className="flex justify-center h-40">
           <img
             src={producto.imagen_url || ""}
@@ -49,22 +52,20 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
         </div>
       </Link>
 
-      <footer className="mt-auto">
-        <div className="flex gap-x-2">
-          <Button className="rounded-2xl py-4 flex-1">Agregar al carrito</Button>
-          <Button
-            variant="outline"
-            className="rounded-2xl py-4"
-            onClick={() => setEsFavorito((valorActual) => !valorActual)}
-          >
-            <img
-              src={esFavorito ? corarosa : coragris}
-              width={20}
-              height={20}
-              alt={esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
-            />
-          </Button>
-        </div>
+      <footer className="mt-auto flex justify-center gap-x-2">
+        <Button className="rounded-2xl py-4 flex-1">Agregar al carrito</Button>
+        <Button
+          variant="outline"
+          className="rounded-2xl py-4"
+          onClick={() => setEsFavorito((valorActual) => !valorActual)}
+        >
+          <img
+            src={esFavorito ? corarosa : coragris}
+            width={20}
+            height={20}
+            alt={esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
+          />
+        </Button>
       </footer>
     </article>
   );

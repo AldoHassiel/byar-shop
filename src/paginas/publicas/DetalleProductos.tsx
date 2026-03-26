@@ -10,7 +10,7 @@ export default function DetalleProductos() {
   const { producto, cargando } = useProductos(Number(id));
   const [cantidad, setCantidad] = useState(1);
 
-  if (cargando) return <p>Cargando detalle producto</p>;
+  if (cargando) return <p className="mt-20 p-6">Cargando...</p>;
 
   return (
     <div className="bg-fondogris px-10 py-10 mt-20">

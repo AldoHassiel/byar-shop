@@ -9,7 +9,7 @@ import {
 import useProductos from "@/hooks/useProductos";
 import type { Negocio } from "@/types/negocio";
 import { Medal } from "lucide-react";
-import {CreditCard} from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { Rocket } from "lucide-react";
 import { useOutletContext } from "react-router";
 import nyar from "@/assets/Fotoinicio/ByarPLa.png";
@@ -50,14 +50,15 @@ export default function Inicio() {
     ),
   };
 
+  if (cargando) return <p className="mt-20 p-6">Cargando...</p>;
+
   return (
     <>
-      
       <section className="relative w-full overflow-hidden">
         <img
           src={nyar}
           alt="Hero"
-         className="w-full h-[460px] sm:h-[620px] lg:h-[700px] 2xl:h-[900] object-cover object-center"
+          className="w-full h-[460px] sm:h-[620px] lg:h-[700px] 2xl:h-[900] object-cover object-center"
         />
         {/* <div>
           <h2 className="text-center text-4xl">{datos.hero_titulo}</h2>
@@ -98,7 +99,9 @@ export default function Inicio() {
           </Carousel>
         </div>
         {!cargandoProductos && productos.length === 0 && (
-          <p className="text-center mt-5">No hay productos destacados disponibles.</p>
+          <p className="text-center mt-5">
+            No hay productos destacados disponibles.
+          </p>
         )}
       </section>
       <section className="bg-white p-8">
@@ -122,7 +125,7 @@ export default function Inicio() {
         <div className="flex justify-center items-center">
           {cargando ? (
             <div className="w-full max-w-md h-80 bg-gray-200 animate-pulse rounded-2xl" />
-          ) : (datos.imagen_sobre_de_url || imagenplazuela) ? (
+          ) : datos.imagen_sobre_de_url || imagenplazuela ? (
             <img
               src={datos.imagen_sobre_de_url || imagenplazuela}
               alt="Imagen del negocio"
@@ -133,8 +136,12 @@ export default function Inicio() {
           )}
         </div>
         <div>
-          <h2 className="text-center font-bold text-4xl">Sobre {datos?.nombre}</h2>
-          <p className="text-justify ml-4 mr-4 text-2xl mt-5">{datos?.sobre_de}</p>
+          <h2 className="text-center font-bold text-4xl">
+            Sobre {datos?.nombre}
+          </h2>
+          <p className="text-justify ml-4 mr-4 text-2xl mt-5">
+            {datos?.sobre_de}
+          </p>
         </div>
       </section>
     </>

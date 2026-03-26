@@ -12,11 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import coragris from "@/assets/corazongris.svg";
-import corarosa from "@/assets/corazonrosa.svg";
 
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router";
+import Corazon from "@/components/Corazon";
 
 export default function Productos() {
   const [searchParams] = useSearchParams();
@@ -45,7 +44,6 @@ export default function Productos() {
     { label: "$2000 - $2500", min: 2000, max: 2500 },
     { label: "$2500 o más", min: 2500, max: undefined },
   ];
-  const [esFavorito] = useState(false);
 
   useEffect(() => {
     const categoriaParam = searchParams.get("idCategoria");
@@ -88,7 +86,7 @@ export default function Productos() {
 
   const titulo = nombreCategoriaSeleccionada || "Productos";
 
-  if (cargando) return <p className="p-6">Cargando...</p>;
+  if (cargando) return <p className="p-6 mt-20">Cargando...</p>;
 
   return (
     <div className="mt-20">
@@ -208,9 +206,9 @@ export default function Productos() {
       {/* GRID DE PRODUCTOS */}
       <div className="grid grid-cols-4 gap-6 px-6 pb-6">
         {productos.map((producto) => (
-          <Link to={`/productos/${producto.id}`} key={producto.id}>
-            <Card className="rounded-2xl shadow-sm border bg-white overflow-hidden hover:shadow-md transition">
-              {/* Imagen */}
+          <Card className="rounded-2xl shadow-sm border bg-white overflow-hidden hover:shadow-md transition">
+            {/* Imagen */}
+            <Link to={`/productos/${producto.id}`}>
               <div className="w-full h-56 bg-white-100 flex items-center justify-center">
                 {producto.imagen_url && (
                   <img
@@ -232,26 +230,12 @@ export default function Productos() {
                   {producto.nombre_marca || "Sin marca"}
                 </p>
               </CardContent>
-
-              <CardFooter className="p-4 flex items-center gap-2">
-                <Button variant="pink">Agregar al carrito</Button>
-
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full border"
-                  //onClick={() => setEsFavorito((v) => !v)}
-                >
-                  <img
-                    src={esFavorito ? corarosa : coragris}
-                    width={20}
-                    height={20}
-                    alt="favorito"
-                  />
-                </Button>
-              </CardFooter>
-            </Card>
-          </Link>
+            </Link>
+            <CardFooter className="p-4 flex items-center gap-2">
+              <Button variant="pink">Agregar al carrito</Button>
+              <Corazon es_favorito={producto.es_favorito} />
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>
