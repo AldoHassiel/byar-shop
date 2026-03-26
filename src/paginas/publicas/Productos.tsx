@@ -20,8 +20,10 @@ import coragris from "@/assets/corazongris.svg";
 import corarosa from "@/assets/corazonrosa.svg";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router";
 
 export default function Productos() {
+  const [searchParams] = useSearchParams();
   const { productos, cargando, obtenerTodos } = useProductos();
 
   const { categorias } = useCategorias();
@@ -48,6 +50,27 @@ export default function Productos() {
     { label: "$2500 o más", min: 2500, max: undefined },
   ];
   const [esFavorito] = useState(false);
+
+  useEffect(() => {
+    const categoriaParam = searchParams.get("idCategoria");
+    const subcategoriaParam = searchParams.get("idSubcategoria");
+
+    const categoriaParseada = categoriaParam ? Number(categoriaParam) : undefined;
+    const subcategoriaParseada = subcategoriaParam
+      ? Number(subcategoriaParam)
+      : undefined;
+
+    setIdCategoria(
+      categoriaParseada !== undefined && !Number.isNaN(categoriaParseada)
+        ? categoriaParseada
+        : undefined,
+    );
+    setIdSubcategoria(
+      subcategoriaParseada !== undefined && !Number.isNaN(subcategoriaParseada)
+        ? subcategoriaParseada
+        : undefined,
+    );
+  }, [searchParams]);
 
   useEffect(() => {
     obtenerTodos(

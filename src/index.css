@@ -252,10 +252,14 @@
     body {
         @apply bg-background text-foreground;
         letter-spacing: var(--tracking-normal);
+        margin: 0;
+        overflow-x: hidden;
     }
 
     html {
         font-family:
             "GlacialIndifference", ui-sans-serif, system-ui, sans-serif;
+        margin: 0;
+        overflow-x: hidden;
     }
 }
