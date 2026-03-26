@@ -102,7 +102,7 @@ export default function useProductos(id?: number) {
     } else {
       cargarTodos();
     }
-  }, []);
+  }, [id]);
 
   return {
     productos,

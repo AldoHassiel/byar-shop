@@ -1,85 +1,71 @@
-import TarjetaProducto from "@/components/TarjetaProducto";
+import SeguirViendo from "@/components/SeguirViendo";
 import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Input } from "@/components/ui/input";
+import SelectorCantidad from "@/components/SelectorCantidad";
 import useProductos from "@/hooks/useProductos";
-import { MinusIcon, PlusIcon } from "lucide-react";
 import { useParams } from "react-router";
+import { useState } from "react";
 
 export default function DetalleProductos() {
   const { id } = useParams();
   const { producto, cargando } = useProductos(Number(id));
+  const [cantidad, setCantidad] = useState(1);
 
   if (cargando) return <p>Cargando detalle producto</p>;
 
   return (
-    <div className="bg-fondogris px-20 py-10">
-      <section className="grid grid-cols-12 gap-5">
-        <article className="col-span-8 flex gap-x-10 p-5 bg-white rounded-2xl">
-          <div>
-            <img
-              src={producto?.imagen_url}
-              alt="Imagen del producto"
-              className="w-[400px] h-[400px] object-contain"
-            />
-          </div>
+    <div className="bg-fondogris px-10 py-10">
+      <section className="flex gap-8 px-50">
+        <div className="bg-white rounded-2xl p-8 flex items-center justify-center shrink-0">
+          <img
+            src={producto?.imagen_url}
+            alt="Imagen del producto"
+            className="max-w-sm max-h-96 object-contain"
+          />
+        </div>
 
-          <div className="flex flex-col justify-around">
-            <h1 className="text-4xl mt-5">{producto?.nombre}</h1>
-
-            <div>
-              <p className="font-bold text-2xl mt-5">
-                {producto?.nombre_marca}
-              </p>
-              <data value={producto?.precio} className="text-xl">
+        <div className="flex flex-col gap-6 flex-1">
+          <div className="bg-white rounded-2xl p-8">
+            <p className="text-sm text-gray-500 mb-2">{producto?.nombre_marca}</p>
+            <h1 className="text-4xl font-bold mb-4">{producto?.nombre}</h1>
+            
+            <div className="mb-6">
+              <data value={producto?.precio} className="text-3xl text-black">
                 MXN {producto?.precio}
               </data>
+            </div>
 
-              <h2 className="font-bold text-xl mt-5">Descripción</h2>
-              <p className="text-xl">{producto?.descripcion}</p>
+            <div className="mb-6">
+              <h2 className="font-bold text-lg mb-2">Descripción</h2>
+              <p className="text-base text-gray-700">{producto?.descripcion}</p>
             </div>
           </div>
-        </article>
-        <div className="col-span-4 bg-white rounded-2xl p-5 flex flex-col justify-between">
-          <div>
-            <p className="text-center text-xl border-b border-b-gray-500 py-2 mb-5">
-              Stock disponible
-            </p>
-            <p>Hola</p>
-          </div>
 
-          <div>
-            <ButtonGroup className="w-full">
-              <Button variant="outline" size="icon">
-                <MinusIcon />
-              </Button>
-              <Input type="number" value={1} className="text-center" />
-              <Button variant="outline" size="icon">
-                <PlusIcon />
-              </Button>
-            </ButtonGroup>
+          <div className="bg-white rounded-2xl p-8">
+            <div className="mb-6 text-center">
+              <p className="text-lg font-semibold mb-2">Stock disponible</p>
+              <p className="text-xl">{producto?.stock}</p>
+            </div>
 
-            <Button className="mt-2 w-full p-5">Agregar al carrito</Button>
+            <div className="space-y-3 text-center">
+              <SelectorCantidad
+                cantidad={cantidad}
+                setCantidad={setCantidad}
+                stock={producto?.stock || 0}
+              />
+
+              <Button className="w-full p-6 text-lg font-semibold">Agregar al carrito</Button>
+            </div>
           </div>
         </div>
       </section>
 
       <section className="mt-10">
-        <h2 className="text-2xl text-gray-500">Seguir viendo</h2>
-        <div className="mt-5 flex gap-5 justify-center">
-          <TarjetaProducto />
-          <TarjetaProducto />
-          <TarjetaProducto />
-          <TarjetaProducto />
-          <TarjetaProducto />
-        </div>
+        <SeguirViendo 
+          idCategorias={producto?.id_categoria ? [producto.id_categoria] : []}
+          productoExcluir={Number(id)}
+          titulo="Seguir viendo"
+          limite={5}
+        />
       </section>
     </div>
   );
