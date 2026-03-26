@@ -5,7 +5,7 @@ import type {
   ProductoEditadoFormulario,
   ProductoFormulario,
 } from "@/types/productos";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ConfiguracionUseProductos = {
   paginaInicial?: number;
@@ -27,6 +27,7 @@ export default function useProductos(configuracion?: number | ConfiguracionUsePr
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [producto, setProducto] = useState<ProductoDetallado>();
   const [cargando, setCargando] = useState(true);
+  const requestIdRef = useRef(0);
 
   const obtenerTodos = async (
     mostrarNotificacion?: true,
@@ -39,6 +40,7 @@ export default function useProductos(configuracion?: number | ConfiguracionUsePr
     pagina = 1,
     limite = 20,
   ) => {
+    const requestId = ++requestIdRef.current;
     setCargando(true);
     const datos = await apiProductos.obtenerTodos(
       mostrarNotificacion,
@@ -51,6 +53,11 @@ export default function useProductos(configuracion?: number | ConfiguracionUsePr
       pagina,
       limite,
     );
+
+    if (requestId !== requestIdRef.current) {
+      return;
+    }
+
     if (datos) {
       setProductos(datos.productos);
       setTotalPaginas(datos.totalPaginas);

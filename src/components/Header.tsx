@@ -1,5 +1,6 @@
 import {
   Brush,
+  ChevronDown,
   MenuIcon,
   Package,
   Search,
@@ -22,11 +23,13 @@ import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
 } from "@/components/ui/accordion";
 
 export default function Header() {
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const [categoriaExpandida, setCategoriaExpandida] = useState<number | null>(
+    null,
+  );
   const { categorias, cargandoCategorias } = useCategorias();
   const { subCategorias, cargandoSubcategorias } = useSubcategorias();
 
@@ -98,7 +101,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 flex justify-around bg-byar/40 backdrop-blur-md border-b border-white/20 py-4">
+    <header className="fixed top-0 w-full z-50 h-20 flex items-center justify-around bg-byar/40 backdrop-blur-md border-b border-white/20">
       <Popover open={menuAbierto} onOpenChange={setMenuAbierto}>
         <PopoverTrigger asChild>
           <button type="button" aria-label="Abrir menú de categorías">
@@ -120,25 +123,69 @@ export default function Header() {
           )}
 
           {!cargandoCategorias && categorias.length > 0 && (
-            <Accordion type="single" collapsible className="w-full">
+            <Accordion
+              type="single"
+              collapsible
+              value={
+                categoriaExpandida !== null
+                  ? `categoria-${categoriaExpandida}`
+                  : ""
+              }
+              className="w-full"
+            >
               {categorias.map((categoria) => {
                 const subcategorias =
                   subcategoriasPorCategoria.get(categoria.id) ?? [];
                 const IconoCategoria = obtenerIconoCategoria(categoria.nombre);
+                const expandida = categoriaExpandida === categoria.id;
 
                 return (
                   <AccordionItem
                     key={categoria.id}
                     value={`categoria-${categoria.id}`}
                   >
-                    <AccordionTrigger className="py-1.5 text-base font-semibold hover:no-underline">
-                      <span className="flex items-center gap-2">
+                    <div
+                      className="flex items-center justify-between gap-3 py-1.5 rounded px-1 cursor-pointer hover:bg-muted"
+                      role="button"
+                      tabIndex={0}
+                      aria-expanded={expandida}
+                      aria-label={`Mostrar subcategorias de ${categoria.nombre}`}
+                      onClick={() =>
+                        setCategoriaExpandida(expandida ? null : categoria.id)
+                      }
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setCategoriaExpandida(
+                            expandida ? null : categoria.id,
+                          );
+                        }
+                      }}
+                    >
+                      <div className="flex items-center gap-2">
                         <IconoCategoria size={18} className="text-fuchsia-500" />
-                        <span>{categoria.nombre}</span>
-                      </span>
-                    </AccordionTrigger>
+                        <Link
+                          to={`/productos?idCategoria=${categoria.id}`}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setMenuAbierto(false);
+                          }}
+                          className="text-base font-semibold hover:text-byar"
+                        >
+                          {categoria.nombre}
+                        </Link>
+                      </div>
+
+                      <ChevronDown
+                        size={18}
+                        className={`transition-transform ${
+                          expandida ? "rotate-180" : "rotate-0"
+                        }`}
+                      />
+                    </div>
 
                     <AccordionContent className="pb-2">
+
                       {subcategorias.length === 0 ? (
                         <p className="pl-7 text-sm text-muted-foreground">
                           Sin subcategorías
@@ -171,9 +218,9 @@ export default function Header() {
       </Popover>
 
       <Link to="/">
-        <h1 className="text-5xl text-white font-titulo">byarshop</h1>
+        <h1 className="text-5xl text-center text-white font-titulo">byarshop</h1>
       </Link>
-      <nav className="flex space-x-5">
+      <nav className="flex items-center space-x-5">
         <Link to="/productos">
           <Search color="white" size={32} />
         </Link>
