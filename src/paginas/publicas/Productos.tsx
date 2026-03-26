@@ -2,11 +2,7 @@ import useProductos from "@/hooks/useProductos";
 import useMarcas from "@/hooks/useMarca";
 import useCategorias from "@/hooks/useCategorias";
 import useSubcategorias from "../../hooks/useSubcategorias";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -20,7 +16,7 @@ import coragris from "@/assets/corazongris.svg";
 import corarosa from "@/assets/corazonrosa.svg";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 
 export default function Productos() {
   const [searchParams] = useSearchParams();
@@ -55,7 +51,9 @@ export default function Productos() {
     const categoriaParam = searchParams.get("idCategoria");
     const subcategoriaParam = searchParams.get("idSubcategoria");
 
-    const categoriaParseada = categoriaParam ? Number(categoriaParam) : undefined;
+    const categoriaParseada = categoriaParam
+      ? Number(categoriaParam)
+      : undefined;
     const subcategoriaParseada = subcategoriaParam
       ? Number(subcategoriaParam)
       : undefined;
@@ -85,7 +83,7 @@ export default function Productos() {
   }, [precioMin, precioMax, idMarca, idCategoria, idSubcategoria]);
 
   const nombreCategoriaSeleccionada = categorias.find(
-    (cat) => cat.id === idCategoria
+    (cat) => cat.id === idCategoria,
   )?.nombre;
 
   const titulo = nombreCategoriaSeleccionada || "Productos";
@@ -93,7 +91,7 @@ export default function Productos() {
   if (cargando) return <p className="p-6">Cargando...</p>;
 
   return (
-    <>
+    <div className="mt-20">
       {/* HEADER */}
       <div className="flex items-center justify-between px-6 py-4">
         <h1 className="text-6xl not-italic">{titulo}</h1>
@@ -210,59 +208,52 @@ export default function Productos() {
       {/* GRID DE PRODUCTOS */}
       <div className="grid grid-cols-4 gap-6 px-6 pb-6">
         {productos.map((producto) => (
-          <Card
-            key={producto.id}
-            className="rounded-2xl shadow-sm border bg-white overflow-hidden hover:shadow-md transition"
-          >
-            {/* Imagen */}
-            <div className="w-full h-56 bg-white-100 flex items-center justify-center">
-              {producto.imagen_url && (
-                <img
-                  src={producto.imagen_url}
-                  alt={producto.nombre}
-                  className="h-full object-contain"
-                />
-              )}
-            </div>
+          <Link to={`/productos/${producto.id}`} key={producto.id}>
+            <Card className="rounded-2xl shadow-sm border bg-white overflow-hidden hover:shadow-md transition">
+              {/* Imagen */}
+              <div className="w-full h-56 bg-white-100 flex items-center justify-center">
+                {producto.imagen_url && (
+                  <img
+                    src={producto.imagen_url}
+                    alt={producto.nombre}
+                    className="h-full object-contain"
+                  />
+                )}
+              </div>
 
-            <CardContent className="p-4 space-y-1">
-              <p className="font-semibold text-lg">
-                MXN {producto.precio}
-              </p>
+              <CardContent className="p-4 space-y-1">
+                <p className="font-semibold text-lg">MXN {producto.precio}</p>
 
-              <p className="text-sm text-gray-700 leading-tight">
-                {producto.nombre}
-              </p>
+                <p className="text-sm text-gray-700 leading-tight">
+                  {producto.nombre}
+                </p>
 
-              <p className="text-xs font-semibold text-black">
-                {producto.nombre_marca || "Sin marca"}
-              </p>
-            </CardContent>
+                <p className="text-xs font-semibold text-black">
+                  {producto.nombre_marca || "Sin marca"}
+                </p>
+              </CardContent>
 
-            <CardFooter className="p-4 flex items-center gap-2">
-              <Button
-                variant="pink"
-              >
-                Agregar al carrito
-              </Button>
+              <CardFooter className="p-4 flex items-center gap-2">
+                <Button variant="pink">Agregar al carrito</Button>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full border"
-              //onClick={() => setEsFavorito((v) => !v)}
-              >
-                <img
-                  src={esFavorito ? corarosa : coragris}
-                  width={20}
-                  height={20}
-                  alt="favorito"
-                />
-              </Button>
-            </CardFooter>
-          </Card>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full border"
+                  //onClick={() => setEsFavorito((v) => !v)}
+                >
+                  <img
+                    src={esFavorito ? corarosa : coragris}
+                    width={20}
+                    height={20}
+                    alt="favorito"
+                  />
+                </Button>
+              </CardFooter>
+            </Card>
+          </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 }

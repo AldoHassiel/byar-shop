@@ -40,7 +40,7 @@ export default function MiCarrito() {
   };
 
   return (
-    <div className="bg-fondogris px-10 py-10 min-h-screen">
+    <div className="bg-fondogris px-10 py-10 min-h-screen mt-10">
       <h1 className="text-4xl font-bold mb-8">Mi Carrito</h1>
 
       {carrito.length === 0 ? (
@@ -58,7 +58,10 @@ export default function MiCarrito() {
           <div className="bg-white rounded-2xl p-8 mb-8">
             <h2 className="text-2xl font-bold mb-4">Productos</h2>
             {carrito.map((item) => (
-              <div key={item.id} className="flex justify-between items-center mb-4 p-4 border-b">
+              <div
+                key={item.id}
+                className="flex justify-between items-center mb-4 p-4 border-b"
+              >
                 <div>
                   <p className="font-semibold">{item.nombre}</p>
                   <p className="text-gray-500">Cantidad: {item.cantidad}</p>

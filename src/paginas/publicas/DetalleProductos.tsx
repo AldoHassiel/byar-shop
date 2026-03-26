@@ -13,7 +13,7 @@ export default function DetalleProductos() {
   if (cargando) return <p>Cargando detalle producto</p>;
 
   return (
-    <div className="bg-fondogris px-10 py-10">
+    <div className="bg-fondogris px-10 py-10 mt-20">
       <section className="flex gap-8 px-50">
         <div className="bg-white rounded-2xl p-8 flex items-center justify-center shrink-0">
           <img
@@ -25,9 +25,11 @@ export default function DetalleProductos() {
 
         <div className="flex flex-col gap-6 flex-1">
           <div className="bg-white rounded-2xl p-8">
-            <p className="text-sm text-gray-500 mb-2">{producto?.nombre_marca}</p>
+            <p className="text-sm text-gray-500 mb-2">
+              {producto?.nombre_marca}
+            </p>
             <h1 className="text-4xl font-bold mb-4">{producto?.nombre}</h1>
-            
+
             <div className="mb-6">
               <data value={producto?.precio} className="text-3xl text-black">
                 MXN {producto?.precio}
@@ -53,14 +55,16 @@ export default function DetalleProductos() {
                 stock={producto?.stock || 0}
               />
 
-              <Button className="w-full p-6 text-lg font-semibold">Agregar al carrito</Button>
+              <Button className="w-full p-6 text-lg font-semibold">
+                Agregar al carrito
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
       <section className="mt-10">
-        <SeguirViendo 
+        <SeguirViendo
           idCategorias={producto?.id_categoria ? [producto.id_categoria] : []}
           productoExcluir={Number(id)}
           titulo="Seguir viendo"
