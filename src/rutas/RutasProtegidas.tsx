@@ -1,27 +1,26 @@
+import { useAutenticacion } from "@/global/AuthContexto";
 import { Navigate, Outlet } from "react-router";
-import { usarSesion } from "@/global/usarSesion";
 
 export function RutaCliente() {
-  const { id } = usarSesion();
+  const { usuario } = useAutenticacion();
   const modoDesarrollo = import.meta.env.DEV;
 
   if (modoDesarrollo) {
     return <Outlet />;
   }
 
-  if (!id) return <Navigate to="/iniciar-sesion" replace />;
+  if (!usuario?.id) return <Navigate to="/iniciar-sesion" replace />;
   return <Outlet />;
 }
 
 export function RutaAdmin() {
-  const { id, esAdmin, modoAdmin } = usarSesion();
+  const { usuario } = useAutenticacion();
   const modoDesarrollo = import.meta.env.DEV;
 
   if (modoDesarrollo) {
     return <Outlet />;
   }
 
-  if (!id) return <Navigate to="/iniciar-sesion" replace />;
-  if (!esAdmin || !modoAdmin) return <Navigate to="/" replace />;
+  if (!usuario?.es_admin) return <Navigate to="/iniciar-sesion" replace />;
   return <Outlet />;
 }
