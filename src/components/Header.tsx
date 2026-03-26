@@ -101,7 +101,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 h-20 flex items-center justify-around bg-byar/40 backdrop-blur-md border-b border-white/20">
+    <header className="fixed top-0 w-full z-50 h-20 flex items-center justify-between bg-byar/40 backdrop-blur-md border-b border-white/20 px-15">
       <Popover open={menuAbierto} onOpenChange={setMenuAbierto}>
         <PopoverTrigger asChild>
           <button type="button" aria-label="Abrir menú de categorías">
@@ -163,7 +163,10 @@ export default function Header() {
                       }}
                     >
                       <div className="flex items-center gap-2">
-                        <IconoCategoria size={18} className="text-fuchsia-500" />
+                        <IconoCategoria
+                          size={18}
+                          className="text-fuchsia-500"
+                        />
                         <Link
                           to={`/productos?idCategoria=${categoria.id}`}
                           onClick={(event) => {
@@ -185,7 +188,6 @@ export default function Header() {
                     </div>
 
                     <AccordionContent className="pb-2">
-
                       {subcategorias.length === 0 ? (
                         <p className="pl-7 text-sm text-muted-foreground">
                           Sin subcategorías
@@ -217,8 +219,8 @@ export default function Header() {
         </PopoverContent>
       </Popover>
 
-      <Link to="/">
-        <h1 className="text-5xl text-center text-white font-titulo">byarshop</h1>
+      <Link to="/" className="absolute left-1/2 -translate-x-1/2">
+        <h1 className="text-[65px] text-white font-titulo mt-2">byarshop</h1>
       </Link>
       <nav className="flex items-center space-x-5">
         <Link to="/productos">
