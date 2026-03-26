@@ -7,7 +7,22 @@ import type {
 } from "@/types/productos";
 import { useEffect, useState } from "react";
 
-export default function useProductos(id?: number) {
+type ConfiguracionUseProductos = {
+  paginaInicial?: number;
+  limiteInicial?: number;
+};
+
+export default function useProductos(configuracion?: number | ConfiguracionUseProductos) {
+  const id = typeof configuracion === "number" ? configuracion : undefined;
+  const paginaInicial =
+    typeof configuracion === "object" && configuracion?.paginaInicial
+      ? configuracion.paginaInicial
+      : 1;
+  const limiteInicial =
+    typeof configuracion === "object" && configuracion?.limiteInicial
+      ? configuracion.limiteInicial
+      : 20;
+
   const [productos, setProductos] = useState<Producto[]>([]);
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [producto, setProducto] = useState<ProductoDetallado>();
@@ -90,7 +105,17 @@ export default function useProductos(id?: number) {
 
   useEffect(() => {
     const cargarTodos = async () => {
-      await obtenerTodos();
+      await obtenerTodos(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        paginaInicial,
+        limiteInicial,
+      );
     };
 
     const cargarUno = async (id: number) => {
@@ -102,7 +127,7 @@ export default function useProductos(id?: number) {
     } else {
       cargarTodos();
     }
-  }, [id]);
+  }, [id, limiteInicial, paginaInicial]);
 
   return {
     productos,

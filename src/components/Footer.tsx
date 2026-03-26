@@ -1,22 +1,44 @@
 import type { Negocio } from "@/types/negocio";
-import { Instagram, MapPin, Copyright } from "lucide-react";
+import { Instagram, MapPin } from "lucide-react";
 
 interface Props {
   negocio: Negocio;
 }
+const NEGOCIO_DEFAULT: Negocio = {
+  id: 0,
+  nombre: "Byarshop",
+  descripcion: "Tienda de productos extranjeros de calidad",
+  sobre_de: "Somos una tienda comprometida con la calidad.",
+  imagen_sobre_de_url: "",
+  instagram: "https://www.instagram.com/byar.shop",
+  direccion: "Plazuela 27 de Sep frente a la iglesia",
+  dias_laborales: "Viernes a Domingo",
+  hora_de_apertura: "6:30 AM",
+  hora_de_cierre: "10:00 PM",
+  hero_titulo: "Bienvenido a nuestra tienda",
+  hero_descripcion: "Descubre los mejores productos para ti.",
+  hero_imagen_url: "",
+};
+const noVacio = (v: unknown) => v !== null && v !== "" && v !== undefined;
 
 export default function Footer({ negocio }: Props) {
+    const datos: Negocio = {
+      ...NEGOCIO_DEFAULT,
+      ...Object.fromEntries(
+        Object.entries(negocio ?? {}).filter(([_, v]) => noVacio(v)),
+      ),
+    };
   return (
     <footer className="relative bg-byar px-10 py-7">
-      <div className="absolute top-4 right-5 text-white">
+      {/* <div className="absolute top-4 right-5 text-white">
         <Copyright size={24} strokeWidth={2.5} />
-      </div>
+      </div> */}
 
       <div className="flex flex-col gap-3 max-w-xl">
         <h2 className="text-white font-bold text-2xl">¡Contáctanos!</h2>
 
         <a
-          href={negocio?.instagram ?? "https://www.instagram.com/byar.shop"}
+          href={datos.instagram}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2.5 text-white text-sm"
@@ -34,17 +56,23 @@ export default function Footer({ negocio }: Props) {
           <MapPin size={22} strokeWidth={2.5} className="shrink-0 mt-0.5" />
           <div className="flex flex-col leading-snug">
             <span>
-              {negocio?.direccion ?? "Plazuela 27 de Sep frente a la iglesia"}
+              {datos.direccion}
             </span>
             <div className="space-x-2">
-              <span>{negocio?.dias_laborales ?? "Viernes a Domingo"}</span>
+              <span>{datos.dias_laborales}</span>
               <span>
-                {negocio?.hora_de_apertura ?? "6:30 PM"} a{" "}
-                {negocio?.hora_de_cierre ?? "10:00 PM"}
+                {datos.hora_de_apertura} a{" "}
+                {datos.hora_de_cierre}
               </span>
             </div>
           </div>
         </a>
+      </div>
+      <div>
+        <p className="text-white text-center text-sm mt-6">
+          &copy; {new Date().getFullYear()} Byarshop. Todos los derechos
+          reservados.
+        </p>
       </div>
     </footer>
   );
