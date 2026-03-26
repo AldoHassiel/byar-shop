@@ -1,5 +1,5 @@
 import type { Negocio } from "@/types/negocio";
-import { Instagram, MapPin } from "lucide-react";
+import { CircleQuestionMark, Instagram, MapPin } from "lucide-react";
 
 interface Props {
   negocio: Negocio;
@@ -22,20 +22,22 @@ const NEGOCIO_DEFAULT: Negocio = {
 const noVacio = (v: unknown) => v !== null && v !== "" && v !== undefined;
 
 export default function Footer({ negocio }: Props) {
-    const datos: Negocio = {
-      ...NEGOCIO_DEFAULT,
-      ...Object.fromEntries(
-        Object.entries(negocio ?? {}).filter(([_, v]) => noVacio(v)),
-      ),
-    };
+  const datos: Negocio = {
+    ...NEGOCIO_DEFAULT,
+    ...Object.fromEntries(
+      Object.entries(negocio ?? {}).filter(([_, v]) => noVacio(v)),
+    ),
+  };
   return (
     <footer className="relative bg-byar px-10 py-7">
-      {/* <div className="absolute top-4 right-5 text-white">
-        <Copyright size={24} strokeWidth={2.5} />
-      </div> */}
+      <div className="absolute top-10 right-10 text-white">
+        <CircleQuestionMark color="white" size={32} />
+      </div>
 
       <div className="flex flex-col gap-3 max-w-xl">
-        <h2 className="text-white font-bold text-2xl">¡Contáctanos!</h2>
+        <div className="flex justify-between">
+          <h2 className="text-white font-bold text-2xl">¡Contáctanos!</h2>
+        </div>
 
         <a
           href={datos.instagram}
@@ -55,14 +57,11 @@ export default function Footer({ negocio }: Props) {
         >
           <MapPin size={22} strokeWidth={2.5} className="shrink-0 mt-0.5" />
           <div className="flex flex-col leading-snug">
-            <span>
-              {datos.direccion}
-            </span>
+            <span>{datos.direccion}</span>
             <div className="space-x-2">
               <span>{datos.dias_laborales}</span>
               <span>
-                {datos.hora_de_apertura} a{" "}
-                {datos.hora_de_cierre}
+                {datos.hora_de_apertura} a {datos.hora_de_cierre}
               </span>
             </div>
           </div>
