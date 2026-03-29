@@ -12,6 +12,13 @@ interface ContextoAutenticacionTipo {
   usuario: InicioSesion | null;
   cargando: boolean;
   iniciarSesion: (correo: string, pwd: string) => Promise<boolean>;
+  registrarCuenta: (
+    nombre: string,
+    apellidos: string,
+    correo: string,
+    pwd: string,
+  ) => Promise<boolean>;
+
   cerrarSesion: () => void;
 }
 
@@ -38,12 +45,34 @@ export function ProveedorAutenticacion({ children }: Props) {
   const iniciarSesion = async (correo: string, pwd: string) => {
     setCargando(true);
     const respuesta = await apiAuth.inciarSesion(correo, pwd, true);
-    if (respuesta.estado) {
+    if (respuesta?.estado) {
       setUsuario(respuesta.datos[0]);
       localStorage.setItem("usuario", JSON.stringify(respuesta.datos[0]));
     }
     setCargando(false);
-    return respuesta.estado;
+    return respuesta?.estado;
+  };
+
+  const registrarCuenta = async (
+    nombre: string,
+    apellidos: string,
+    correo: string,
+    pwd: string,
+  ) => {
+    setCargando(true);
+    const respuesta = await apiAuth.registrarCuenta(
+      nombre,
+      apellidos,
+      correo,
+      pwd,
+      true,
+    );
+    if (respuesta?.estado) {
+      setUsuario(respuesta.datos[0]);
+      localStorage.setItem("usuario", JSON.stringify(respuesta.datos[0]));
+    }
+    setCargando(false);
+    return respuesta?.estado;
   };
 
   const cerrarSesion = () => {
@@ -55,7 +84,13 @@ export function ProveedorAutenticacion({ children }: Props) {
 
   return (
     <ContextoAutenticacion.Provider
-      value={{ usuario, cargando, iniciarSesion, cerrarSesion }}
+      value={{
+        usuario,
+        cargando,
+        iniciarSesion,
+        registrarCuenta,
+        cerrarSesion,
+      }}
     >
       {children}
     </ContextoAutenticacion.Provider>
