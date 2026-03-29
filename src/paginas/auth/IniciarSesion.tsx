@@ -9,7 +9,7 @@ import { ExternalLink } from "lucide-react";
 export default function IniciarSesion() {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
-  const { iniciarSesion } = useAutenticacion();
+  const { iniciarSesion, cargando } = useAutenticacion();
   const navigate = useNavigate();
 
   const manejadorClic = async () => {
@@ -35,8 +35,8 @@ export default function IniciarSesion() {
               Correo
             </Label>
             <Input
+              id="email"
               type="email"
-              name="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -45,8 +45,8 @@ export default function IniciarSesion() {
               Contraseña
             </Label>
             <Input
+              id="pwd"
               type="password"
-              name="pwd"
               required
               value={pwd}
               onChange={(e) => setPwd(e.target.value)}
@@ -55,8 +55,8 @@ export default function IniciarSesion() {
           <Button
             type="submit"
             variant="pink"
-            onClick={manejadorClic}
             className="mt-7 w-full py-4 text-md"
+            disabled={cargando}
           >
             <p className="border-b-2 leading-none">Iniciar sesión</p>
           </Button>
