@@ -1,7 +1,88 @@
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import useProductos from "@/hooks/useProductos";
+import { Pencil, Plus, Trash } from "lucide-react";
+
 export default function GestionProductos() {
+  const { productos, cargando } = useProductos();
+
   return (
     <>
-      <p>Gestion de los productos</p>
+      <div className="flex justify-between">
+        <h2 className="text-4xl">Productos</h2>
+        <Button variant="pink" className="p-4">
+          <Plus />
+          Agregar producto
+        </Button>
+      </div>
+
+      {cargando ? (
+        <div className="flex justify-center items-center h-full">
+          <Spinner className="size-8 text-byar" />
+        </div>
+      ) : (
+        <div className="space-y-4 mt-5">
+          {productos?.map((p) => (
+            <section
+              key={p.id}
+              className="bg-fondogris rounded-2xl flex items-center px-4 py-3 gap-4 "
+            >
+              <div className="w-20 h-20 shrink-0 flex items-center justify-center">
+                <img
+                  src={p.imagen_url}
+                  alt="Imagen del producto"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <table className="w-full text-sm">
+                <colgroup>
+                  <col className="w-[25%]" />
+                  <col className="w-[25%]" />
+                  <col className="w-[25%]" />
+                  <col className="w-[25%]" />
+                </colgroup>
+                <thead>
+                  <tr className="text-gray-800 font-semibold">
+                    <th className="text-left pb-1 border-b border-gray-300">
+                      Nombre
+                    </th>
+                    <th className="text-center pb-1 border-b border-gray-300">
+                      Precio
+                    </th>
+                    <th className="text-center pb-1 border-b border-gray-300">
+                      Stock
+                    </th>
+                    <th className="text-center pb-1 border-b border-gray-300">
+                      Opciones
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="text-gray-600">
+                    <td className="py-3 align-middle truncate">{p.nombre}</td>
+                    <td className="py-3 align-middle text-center whitespace-nowrap">
+                      MXN {p.precio}
+                    </td>
+                    <td className="py-3 align-middle text-center">{p.stock}</td>
+                    <td className="py-3 align-middle text-center">
+                      <div className="flex gap-4 justify-center items-center">
+                        <Pencil
+                          size={24}
+                          className="text-byar cursor-pointer hover:opacity-70 transition-opacity"
+                        />
+                        <Trash
+                          size={24}
+                          className="text-byar cursor-pointer hover:opacity-70 transition-opacity"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          ))}
+        </div>
+      )}
     </>
   );
 }
