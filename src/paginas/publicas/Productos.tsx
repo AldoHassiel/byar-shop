@@ -232,7 +232,9 @@ export default function Productos() {
               </CardContent>
             </Link>
             <CardFooter className="p-4 flex items-center gap-2">
-              <Button variant="pink">Agregar al carrito</Button>
+              <Button variant="pink" className="flex-1">
+                Agregar al carrito
+              </Button>
               <Corazon es_favorito={producto.es_favorito} />
             </CardFooter>
           </Card>
