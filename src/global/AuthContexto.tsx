@@ -1,5 +1,5 @@
 import { apiAuth } from "@/api/auth.api";
-import type { InicioSesion } from "@/types/auth";
+import type { Usuario } from "@/types/auth";
 import {
   createContext,
   useContext,
@@ -9,7 +9,7 @@ import {
 } from "react";
 
 interface ContextoAutenticacionTipo {
-  usuario: InicioSesion | null;
+  usuario: Usuario | null;
   cargando: boolean;
   iniciarSesion: (correo: string, pwd: string) => Promise<boolean>;
   registrarCuenta: (
@@ -30,7 +30,7 @@ interface Props {
 }
 
 export function ProveedorAutenticacion({ children }: Props) {
-  const [usuario, setUsuario] = useState<InicioSesion>(null);
+  const [usuario, setUsuario] = useState<Usuario>(null);
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
@@ -46,8 +46,12 @@ export function ProveedorAutenticacion({ children }: Props) {
     setCargando(true);
     const respuesta = await apiAuth.inciarSesion(correo, pwd, true);
     if (respuesta?.estado) {
-      setUsuario(respuesta.datos[0]);
-      localStorage.setItem("usuario", JSON.stringify(respuesta.datos[0]));
+      setUsuario(respuesta.datos[0].usuario);
+      localStorage.setItem(
+        "usuario",
+        JSON.stringify(respuesta.datos[0].usuario),
+      );
+      localStorage.setItem("token", respuesta.datos[0].token);
     }
     setCargando(false);
     return respuesta?.estado;
@@ -68,8 +72,11 @@ export function ProveedorAutenticacion({ children }: Props) {
       true,
     );
     if (respuesta?.estado) {
-      setUsuario(respuesta.datos[0]);
-      localStorage.setItem("usuario", JSON.stringify(respuesta.datos[0]));
+      setUsuario(respuesta.datos[0].usuario);
+      localStorage.setItem(
+        "usuario",
+        JSON.stringify(respuesta.datos[0].usuario),
+      );
     }
     setCargando(false);
     return respuesta?.estado;
@@ -79,6 +86,7 @@ export function ProveedorAutenticacion({ children }: Props) {
     setCargando(true);
     setUsuario(null);
     localStorage.removeItem("usuario");
+    localStorage.removeItem("token");
     setCargando(false);
   };
 
