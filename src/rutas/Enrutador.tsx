@@ -44,7 +44,9 @@ export default function Enrutador() {
       </Route>
 
       <Route element={<RutaCliente />}>
-        <Route path="/mi-carrito" element={<MiCarrito />} />
+        <Route element={<LayoutPrincipal />}>
+          <Route path="/mi-carrito" element={<MiCarrito />} />
+        </Route>
       </Route>
 
       <Route element={<RutaCliente />}>
