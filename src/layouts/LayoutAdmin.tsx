@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
+import { useAutenticacion } from "@/global/AuthContexto";
 import useNegocio from "@/hooks/useNegocio";
 import {
   Building2,
@@ -38,6 +39,7 @@ const menu: MenuItem[] = [
 
 export default function LayoutAdmin() {
   const { negocio } = useNegocio();
+  const { cerrarSesion } = useAutenticacion();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -79,7 +81,11 @@ export default function LayoutAdmin() {
             </ul>
 
             <div className="mt-auto">
-              <Button variant="pink" className="w-full mt-5">
+              <Button
+                variant="pink"
+                className="w-full mt-5"
+                onClick={cerrarSesion}
+              >
                 Cerrar Sesión
               </Button>
             </div>

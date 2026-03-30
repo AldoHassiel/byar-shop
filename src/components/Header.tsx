@@ -24,8 +24,10 @@ import {
   AccordionContent,
   AccordionItem,
 } from "@/components/ui/accordion";
+import { useAutenticacion } from "@/global/AuthContexto";
 
 export default function Header() {
+  const { usuario } = useAutenticacion();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [categoriaExpandida, setCategoriaExpandida] = useState<number | null>(
     null,
@@ -229,7 +231,7 @@ export default function Header() {
         <Link to="/mi-carrito">
           <ShoppingCart color="white" size={32} />
         </Link>
-        <Link to="/perfil">
+        <Link to={usuario?.es_admin ? "/admin" : "/perfil"}>
           <User2 color="white" size={32} />
         </Link>
       </nav>
