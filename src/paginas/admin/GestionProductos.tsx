@@ -4,13 +4,13 @@ import useProductos from "@/hooks/useProductos";
 import { Pencil, Trash } from "lucide-react";
 
 export default function GestionProductos() {
-  const { productos, cargando } = useProductos();
+  const { productos, cargando, crearProducto } = useProductos();
 
   return (
     <>
       <div className="flex justify-between">
         <h2 className="text-4xl">Productos</h2>
-        <ModalProducto />
+        <ModalProducto accion={crearProducto} />
       </div>
 
       {cargando ? (

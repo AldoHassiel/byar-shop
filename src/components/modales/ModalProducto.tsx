@@ -36,11 +36,14 @@ import type { Categorias } from "@/types/categorias";
 import type { Subcategorias } from "@/types/subcategoria";
 import type { Marcas } from "@/types/marcas";
 import type { ProductoFormulario } from "@/types/productos";
-import useProductos from "@/hooks/useProductos";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
 
-export default function ModalProducto() {
+interface Prop {
+  accion: (producto: ProductoFormulario) => Promise<void>;
+}
+
+export default function ModalProducto({ accion }: Prop) {
   const [abierto, setAbierto] = useState(false);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -55,9 +58,11 @@ export default function ModalProducto() {
   const { subCategorias } = useSubcategorias();
   const { marcas } = useMarcas();
 
-  const { crearProducto, cargando } = useProductos();
+  const [cargando, setCargando] = useState(false);
 
   const manejadorAgregar = async () => {
+    setCargando(true);
+
     if (!nombre.trim()) {
       toast.error("El nombre es requerido", {
         duration: 4000,
@@ -109,8 +114,10 @@ export default function ModalProducto() {
       id_marca: marcaId,
       imagen,
     };
-    console.info(datos);
-    await crearProducto(datos);
+
+    await accion(datos);
+    setCargando(false);
+
     setAbierto(false);
   };
 
@@ -124,6 +131,7 @@ export default function ModalProducto() {
       setSubcategoriaId(null);
       setMarcaId(null);
       setImagen(null);
+      setCargando(false);
     }
     setAbierto(open);
   };
