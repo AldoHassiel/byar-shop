@@ -1,6 +1,7 @@
 @font-face {
     font-family: "GlacialIndifference";
-    src: url("./assets/fuentes/GlacialIndifference-Regular.otf") format("opentype");
+    src: url("./assets/fuentes/GlacialIndifference-Regular.otf")
+        format("opentype");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -16,7 +17,8 @@
 
 @font-face {
     font-family: "GlacialIndifference";
-    src: url("./assets/fuentes/GlacialIndifference-Italic.otf") format("opentype");
+    src: url("./assets/fuentes/GlacialIndifference-Italic.otf")
+        format("opentype");
     font-weight: 400;
     font-style: italic;
     font-display: swap;
@@ -262,4 +264,14 @@
         margin: 0;
         overflow-x: hidden;
     }
+}
+.dialog-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+.dialog-scroll::-webkit-scrollbar-track {
+    background: #f2f2f2;
+}
+.dialog-scroll::-webkit-scrollbar-thumb {
+    background: #a0a0a0;
+    border-radius: 4px;
 }

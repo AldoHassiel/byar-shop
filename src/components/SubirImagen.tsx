@@ -1,0 +1,83 @@
+import { ImageUpIcon, X } from "lucide-react";
+import React, { useRef, useState } from "react";
+
+interface Props {
+  imagenInicial?: string;
+}
+
+export default function SubirImagen({ imagenInicial }: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [vista, setVista] = useState<string | null>(imagenInicial ?? null);
+  const [arrastrando, setArrastrando] = useState(false);
+
+  const manejarImagen = (imagen: File) => {
+    const url = URL.createObjectURL(imagen);
+    setVista(url);
+  };
+
+  const limpiar = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setVista(null);
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
+  return (
+    <div
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setArrastrando(true);
+      }}
+      onDragLeave={() => {
+        setArrastrando(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setArrastrando(false);
+        const imagen = e.dataTransfer.files[0];
+        if (imagen) manejarImagen(imagen);
+      }}
+      className={`relative rounded-2xl flex justify-center items-center h-50 border-2 border-dashed cursor-pointer border-byar transition-colors ${
+        arrastrando && !vista
+          ? "bg-byarclaro"
+          : !vista
+            ? "bg-pink-100 hover:bg-byarclaro"
+            : "bg-pink-100"
+      }`}
+    >
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        ref={inputRef}
+        onChange={(e) => {
+          const imagen = e.target.files?.[0];
+          if (imagen) manejarImagen(imagen);
+        }}
+      />
+
+      {vista ? (
+        <>
+          <img
+            src={vista}
+            alt="Vista previa de la imagen del producto"
+            className="h-full w-full object-contain rounded-2xl p-1"
+          />
+          <button
+            className="absolute top-1 right-1 bg-white rounded-full p-0.5 shadow text-pink-500 hover:text-pink-700 cursor-pointer"
+            onClick={limpiar}
+          >
+            <X size={16} />
+          </button>
+        </>
+      ) : (
+        <div className="flex flex-col justify-center items-center">
+          <ImageUpIcon size={50} className="text-byar mb-2 text-center" />
+          <span className="text-sm text-byar text-center w-50">
+            Arrastra una imagen o haz clic para seleccionar una
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
