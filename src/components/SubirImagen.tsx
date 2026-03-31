@@ -24,6 +24,17 @@ export default function SubirImagen({ imagenInicial, onChange }: Props) {
     onChange?.(null);
   };
 
+  const manejarUrl = async (url: string) => {
+    try {
+      const respuesta = await fetch(url);
+      const blob = await respuesta.blob();
+      const archivo = new File([blob], "imagen.jpg", { type: blob.type });
+      manejarImagen(archivo);
+    } catch {
+      console.error("No se pudo cargar la imagen, el sitio no lo permite.");
+    }
+  };
+
   return (
     <div
       onClick={() => inputRef.current?.click()}
@@ -37,8 +48,13 @@ export default function SubirImagen({ imagenInicial, onChange }: Props) {
       onDrop={(e) => {
         e.preventDefault();
         setArrastrando(false);
-        const imagen = e.dataTransfer.files[0];
-        if (imagen) manejarImagen(imagen);
+        const archivo = e.dataTransfer.files[0];
+        if (archivo) {
+          manejarImagen(archivo);
+          return;
+        }
+        const url = e.dataTransfer.getData("text/uri-list");
+        if (url) manejarUrl(url);
       }}
       className={`relative rounded-2xl flex justify-center items-center h-50 border-2 border-dashed cursor-pointer border-byar transition-colors ${
         arrastrando && !vista
