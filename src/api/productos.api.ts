@@ -7,6 +7,8 @@ import type {
   ProductoFormulario,
 } from "@/types/productos";
 import { toast } from "sonner";
+import axios from "axios";
+import { mostrarErroresZod } from "@/lib/validaciones.zod";
 
 interface Datos {
   totalPaginas: number;
@@ -51,7 +53,7 @@ const obtenerTodos = async (
     }
 
     if (respuestaAPI.estado && mostrarNotificacion) {
-      toast(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
     }
 
     const datos: Datos = {
@@ -61,9 +63,17 @@ const obtenerTodos = async (
 
     return datos;
   } catch (error) {
-    console.error(error);
-    toast("No se pudo hacer la petición", { position: "bottom-right" });
+    if (axios.isAxiosError(error) && error.response) {
+      const { mensaje, datos } = error.response.data;
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
 
+      toast.error("No se pudo hacer la petición", {
+        duration: 4000,
+      });
+    }
     return null;
   }
 };
@@ -81,24 +91,37 @@ const obtenerUno = async (id: number, mostrarNotificacion?: true) => {
     }
 
     if (respuestaAPI.estado && mostrarNotificacion) {
-      toast(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
     }
 
     return respuestaAPI.datos[0];
   } catch (error) {
-    console.error(error);
-    toast("No se pudo hacer la petición", { position: "bottom-right" });
+    if (axios.isAxiosError(error) && error.response) {
+      const { mensaje, datos } = error.response.data;
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
+
+      toast.error("No se pudo hacer la petición", {
+        duration: 4000,
+      });
+    }
     return null;
   }
 };
 
-const crear = async (datos: ProductoFormulario, mostrarNotificacion?: true) => {
+const crear = async (
+  datos: ProductoFormulario,
+  mostrarNotificacion: boolean = true,
+) => {
   try {
     const formulario = new FormData();
 
     formulario.append("nombre", datos.nombre);
     formulario.append("descripcion", datos.descripcion ?? "");
     formulario.append("precio", String(datos.precio));
+    formulario.append("stock", String(datos.stock));
     formulario.append("id_subcategoria", String(datos.id_subcategoria));
     formulario.append("id_marca", String(datos.id_marca));
 
@@ -118,20 +141,33 @@ const crear = async (datos: ProductoFormulario, mostrarNotificacion?: true) => {
     }
 
     if (respuestaAPI.estado && mostrarNotificacion) {
-      toast(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
     }
 
     return respuestaAPI.estado;
   } catch (error) {
     console.error(error);
-    toast("No se pudo hacer la petición", { position: "bottom-right" });
-    return false;
+    if (axios.isAxiosError(error) && error.response) {
+      const { mensaje, datos } = error.response.data;
+      if (mensaje === "Error de validaciones") {
+        console.error(datos);
+        console.error(error.response.data);
+
+        mostrarErroresZod(datos);
+        return null;
+      }
+
+      toast.error("No se pudo hacer la petición", {
+        duration: 4000,
+      });
+    }
+    return null;
   }
 };
 
 const editar = async (
   datos: ProductoEditadoFormulario,
-  mostrarNotificacion?: true,
+  mostrarNotificacion: boolean = true,
 ) => {
   try {
     const formulario = new FormData();
@@ -139,6 +175,7 @@ const editar = async (
     formulario.append("nombre", datos.nombre);
     formulario.append("descripcion", datos.descripcion ?? "");
     formulario.append("precio", String(datos.precio));
+    formulario.append("stock", String(datos.stock));
     formulario.append("id_subcategoria", String(datos.id_subcategoria));
     formulario.append("id_marca", String(datos.id_marca));
     formulario.append("accion_imagen", datos.accion_imagen);
@@ -158,7 +195,7 @@ const editar = async (
     const respuestaAPI = respuestaHttp.data;
 
     if (!respuestaAPI.estado) {
-      toast(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
       return false;
     }
 
@@ -168,13 +205,22 @@ const editar = async (
 
     return respuestaAPI.estado;
   } catch (error) {
-    console.error(error);
-    toast("No se pudo hacer la petición", { position: "bottom-right" });
-    return false;
+    if (axios.isAxiosError(error) && error.response) {
+      const { mensaje, datos } = error.response.data;
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
+
+      toast.error("No se pudo hacer la petición", {
+        duration: 4000,
+      });
+    }
+    return null;
   }
 };
 
-const eliminar = async (id: number, mostrarNotificacion?: true) => {
+const eliminar = async (id: number, mostrarNotificacion: boolean = true) => {
   try {
     const respuestaHttp = await api.delete<ApiRespuesta<null>>(
       `/productos/${id}`,
@@ -182,7 +228,7 @@ const eliminar = async (id: number, mostrarNotificacion?: true) => {
     const respuestaAPI = respuestaHttp.data;
 
     if (!respuestaAPI.estado) {
-      toast(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
       return null;
     }
 
@@ -192,9 +238,18 @@ const eliminar = async (id: number, mostrarNotificacion?: true) => {
 
     return respuestaAPI.estado;
   } catch (error) {
-    console.error(error);
-    toast("No se pudo hacer la petición", { position: "bottom-right" });
-    return false;
+    if (axios.isAxiosError(error) && error.response) {
+      const { mensaje, datos } = error.response.data;
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
+
+      toast.error("No se pudo hacer la petición", {
+        duration: 4000,
+      });
+    }
+    return null;
   }
 };
 

@@ -3,9 +3,10 @@ import React, { useRef, useState } from "react";
 
 interface Props {
   imagenInicial?: string;
+  onChange?: (archivo: File | null) => void;
 }
 
-export default function SubirImagen({ imagenInicial }: Props) {
+export default function SubirImagen({ imagenInicial, onChange }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [vista, setVista] = useState<string | null>(imagenInicial ?? null);
   const [arrastrando, setArrastrando] = useState(false);
@@ -13,12 +14,14 @@ export default function SubirImagen({ imagenInicial }: Props) {
   const manejarImagen = (imagen: File) => {
     const url = URL.createObjectURL(imagen);
     setVista(url);
+    onChange?.(imagen);
   };
 
   const limpiar = (e: React.MouseEvent) => {
     e.stopPropagation();
     setVista(null);
     if (inputRef.current) inputRef.current.value = "";
+    onChange?.(null);
   };
 
   return (

@@ -12,7 +12,9 @@ type ConfiguracionUseProductos = {
   limiteInicial?: number;
 };
 
-export default function useProductos(configuracion?: number | ConfiguracionUseProductos) {
+export default function useProductos(
+  configuracion?: number | ConfiguracionUseProductos,
+) {
   const id = typeof configuracion === "number" ? configuracion : undefined;
   const paginaInicial =
     typeof configuracion === "object" && configuracion?.paginaInicial
@@ -76,7 +78,7 @@ export default function useProductos(configuracion?: number | ConfiguracionUsePr
 
   const crearProducto = async (
     producto: ProductoFormulario,
-    mostrarNotificacion?: true,
+    mostrarNotificacion: boolean = true,
   ) => {
     setCargando(true);
     const estado = await apiProductos.crear(producto, mostrarNotificacion);
@@ -89,7 +91,7 @@ export default function useProductos(configuracion?: number | ConfiguracionUsePr
 
   const editarProducto = async (
     producto: ProductoEditadoFormulario,
-    mostrarNotificacion?: true,
+    mostrarNotificacion: boolean = true,
   ) => {
     setCargando(true);
     const estado = await apiProductos.editar(producto, mostrarNotificacion);
@@ -100,7 +102,10 @@ export default function useProductos(configuracion?: number | ConfiguracionUsePr
     setCargando(false);
   };
 
-  const eliminarProducto = async (id: number, mostrarNotificacion?: true) => {
+  const eliminarProducto = async (
+    id: number,
+    mostrarNotificacion: boolean = true,
+  ) => {
     setCargando(true);
     const estado = await apiProductos.eliminar(id, mostrarNotificacion);
     if (estado) {

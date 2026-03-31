@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
+import ModalProducto from "@/components/modales/ModalProducto";
 import { Spinner } from "@/components/ui/spinner";
 import useProductos from "@/hooks/useProductos";
-import { Pencil, Plus, Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 
 export default function GestionProductos() {
   const { productos, cargando } = useProductos();
@@ -10,10 +10,7 @@ export default function GestionProductos() {
     <>
       <div className="flex justify-between">
         <h2 className="text-4xl">Productos</h2>
-        <Button variant="pink" className="p-4">
-          <Plus />
-          Agregar producto
-        </Button>
+        <ModalProducto />
       </div>
 
       {cargando ? (
@@ -28,11 +25,15 @@ export default function GestionProductos() {
               className="bg-fondogris rounded-2xl flex items-center px-4 py-3 gap-4 "
             >
               <div className="w-20 h-20 shrink-0 flex items-center justify-center">
-                <img
-                  src={p.imagen_url}
-                  alt="Imagen del producto"
-                  className="w-full h-full object-contain"
-                />
+                {p.imagen_url ? (
+                  <img
+                    src={p.imagen_url}
+                    alt="Imagen del producto"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <span>Sin imagen</span>
+                )}
               </div>
               <table className="w-full text-sm">
                 <colgroup>
