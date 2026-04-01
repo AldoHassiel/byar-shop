@@ -1,17 +1,22 @@
 import ModalCategoria from "@/components/modales/ModalCategoria";
 import ModalEliminar from "@/components/modales/ModalEliminar";
-import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import useCategorias from "@/hooks/useCategorias";
 
 export default function GestionCategorias() {
-  const { categorias, cargando } = useCategorias();
+  const {
+    categorias,
+    cargando,
+    crearCategoria,
+    editarCategoria,
+    eliminarCategoria,
+  } = useCategorias();
 
   return (
     <>
       <div className="flex justify-between">
         <h2 className="text-4xl">Categorías</h2>
-        <ModalCategoria />
+        <ModalCategoria accion={crearCategoria} />
       </div>
 
       {cargando ? (
@@ -59,12 +64,16 @@ export default function GestionCategorias() {
                     </td>
                     <td className="py-3 align-middle text-center">
                       <div className="flex gap-4 justify-center items-center">
-                        <ModalCategoria editar categoria={c}/>
+                        <ModalCategoria
+                          editar
+                          categoria={c}
+                          accion={editarCategoria}
+                        />
                         <ModalEliminar
                           titulo="Eliminar producto"
                           descripcion={`¿Estas seguro que deseas eliminar el producto ${c.nombre}?`}
                           nombreResaltado={c.nombre}
-                          accion={() => {}}
+                          accion={() => eliminarCategoria(c.id)}
                         />
                       </div>
                     </td>
