@@ -29,6 +29,8 @@ export default function useProductos(
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [producto, setProducto] = useState<ProductoDetallado>();
   const [cargando, setCargando] = useState(true);
+  const [cargandoDetalle, setCargandoDetalle] = useState(true);
+
   const requestIdRef = useRef(0);
 
   const obtenerTodos = async (
@@ -68,12 +70,12 @@ export default function useProductos(
   };
 
   const obtenerUno = async (id: number, mostrarNotificacion?: true) => {
-    setCargando(true);
+    setCargandoDetalle(true);
     const datos = await apiProductos.obtenerUno(id, mostrarNotificacion);
     if (datos) {
       setProducto(datos);
     }
-    setCargando(false);
+    setCargandoDetalle(false);
   };
 
   const crearProducto = async (

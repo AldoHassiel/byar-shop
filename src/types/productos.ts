@@ -38,4 +38,5 @@ export interface ProductoFormulario {
 
 export interface ProductoEditadoFormulario extends ProductoFormulario {
   accion_imagen: "conservar" | "nueva" | "eliminar";
+  id: number;
 }

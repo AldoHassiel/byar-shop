@@ -1,10 +1,17 @@
 import ModalProducto from "@/components/modales/ModalProducto";
 import { Spinner } from "@/components/ui/spinner";
 import useProductos from "@/hooks/useProductos";
-import { Pencil, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 
 export default function GestionProductos() {
-  const { productos, cargando, crearProducto } = useProductos();
+  const {
+    productos,
+    producto,
+    cargando,
+    obtenerUno,
+    crearProducto,
+    editarProducto,
+  } = useProductos();
 
   return (
     <>
@@ -67,9 +74,12 @@ export default function GestionProductos() {
                     <td className="py-3 align-middle text-center">{p.stock}</td>
                     <td className="py-3 align-middle text-center">
                       <div className="flex gap-4 justify-center items-center">
-                        <Pencil
-                          size={24}
-                          className="text-byar cursor-pointer hover:opacity-70 transition-opacity"
+                        <ModalProducto
+                          editar
+                          accion={editarProducto}
+                          productoId={p.id}
+                          obtenerDetalle={obtenerUno}
+                          detalle={producto?.id === p.id ? producto : null}
                         />
                         <Trash
                           size={24}
