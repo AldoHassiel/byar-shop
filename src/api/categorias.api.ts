@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { mostrarErroresZod } from "@/lib/validaciones.zod";
 
-const obtenerTodas = async (mostrarNotificacion?: true) => {
+const obtenerTodas = async (mostrarNotificacion: boolean = true) => {
   try {
     const respuestaHttp =
       await api.get<ApiRespuesta<Categorias>>("/categorias");
