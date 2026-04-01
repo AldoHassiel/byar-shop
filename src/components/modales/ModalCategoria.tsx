@@ -15,9 +15,10 @@ import { Pencil, Plus } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 interface Props {
-  accion?: (datos: CategoriaDTO) => Promise<void>;
+  accion: (datos: CategoriaDTO) => Promise<void>;
   editar?: boolean;
   categoria?: Categorias;
 }
@@ -45,7 +46,7 @@ export default function ModalCategoria({ editar, categoria, accion }: Props) {
     if (editar) datos = { ...datos, id: categoria?.id };
 
     setCargando(false);
-    await accion?.(datos);
+    await accion(datos);
     setAbierto(false);
   };
 
