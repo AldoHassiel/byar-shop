@@ -1,3 +1,4 @@
+import ModalEliminar from "@/components/modales/ModalEliminar";
 import ModalProducto from "@/components/modales/ModalProducto";
 import { Spinner } from "@/components/ui/spinner";
 import useProductos from "@/hooks/useProductos";
@@ -11,6 +12,7 @@ export default function GestionProductos() {
     obtenerUno,
     crearProducto,
     editarProducto,
+    eliminarProducto,
   } = useProductos();
 
   return (
@@ -81,9 +83,11 @@ export default function GestionProductos() {
                           obtenerDetalle={obtenerUno}
                           detalle={producto?.id === p.id ? producto : null}
                         />
-                        <Trash
-                          size={24}
-                          className="text-byar cursor-pointer hover:opacity-70 transition-opacity"
+                        <ModalEliminar
+                          titulo="Eliminar producto"
+                          descripcion={`¿Estas seguro que deseas eliminar el producto ${p.nombre}?`}
+                          nombreResaltado={p.nombre}
+                          accion={() => eliminarProducto(p.id)}
                         />
                       </div>
                     </td>
