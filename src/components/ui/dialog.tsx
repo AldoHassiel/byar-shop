@@ -11,14 +11,6 @@ function Dialog({
   onOpenChange,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  React.useEffect(() => {
-    if (!open) return;
-    document.documentElement.style.overflow = "hidden";
-    return () => {
-      document.documentElement.style.overflow = "";
-    };
-  }, [open]);
-
   return (
     <DialogPrimitive.Root
       data-slot="dialog"
@@ -49,6 +41,13 @@ function DialogClose({
 }
 
 function DialogOverlay({ className, ...props }: React.ComponentProps<"div">) {
+  React.useEffect(() => {
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
+
   return (
     <div
       data-slot="dialog-overlay"
@@ -111,30 +110,32 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
 function DialogFooter({
   className,
   showCloseButton = false,
+  twoColumns = false,
   children,
   ...props
 }: React.ComponentProps<"div"> & {
   showCloseButton?: boolean;
+  twoColumns?: boolean;
 }) {
   return (
     <div
       data-slot="dialog-footer"
       className={cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
+        "-mx-4 -mb-4 grid gap-2 rounded-b-xl border-t bg-muted/50 p-4",
+        showCloseButton || twoColumns ? "grid-cols-2" : "grid-cols-1",
         className,
       )}
       {...props}
     >
-      {children}
       {showCloseButton && (
         <DialogPrimitive.Close asChild>
           <Button variant="outline">Close</Button>
         </DialogPrimitive.Close>
       )}
+      {children}
     </div>
   );
 }
-
 function DialogTitle({
   className,
   ...props
