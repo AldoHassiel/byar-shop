@@ -180,27 +180,23 @@ const editar = async (
     formulario.append("id_marca", String(datos.id_marca));
     formulario.append("accion_imagen", datos.accion_imagen);
 
-    if (datos.imagen) {
-      formulario.append("imagen", datos.imagen);
-    }
-
     if (datos.accion_imagen === "nueva" && datos.imagen) {
       formulario.append("imagen", datos.imagen);
     }
 
-    const respuestaHttp = await api.post<ApiRespuesta<[]>>(
-      "/productos",
+    const respuestaHttp = await api.put<ApiRespuesta<[]>>(
+      `/productos/${datos.id}`,
       formulario,
     );
     const respuestaAPI = respuestaHttp.data;
 
     if (!respuestaAPI.estado) {
-      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.error(respuestaAPI.mensaje, { position: "bottom-right" });
       return false;
     }
 
     if (respuestaAPI.estado && mostrarNotificacion) {
-      toast(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
     }
 
     return respuestaAPI.estado;
@@ -228,12 +224,12 @@ const eliminar = async (id: number, mostrarNotificacion: boolean = true) => {
     const respuestaAPI = respuestaHttp.data;
 
     if (!respuestaAPI.estado) {
-      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.error(respuestaAPI.mensaje, { position: "bottom-right" });
       return null;
     }
 
     if (respuestaAPI.estado && mostrarNotificacion) {
-      toast(respuestaAPI.mensaje, { position: "bottom-right" });
+      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
     }
 
     return respuestaAPI.estado;

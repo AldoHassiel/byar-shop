@@ -1,12 +1,17 @@
 import { ImageUpIcon, X } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface Props {
   imagenInicial?: string;
   onChange?: (archivo: File | null) => void;
+  onEliminar?: () => void;
 }
 
-export default function SubirImagen({ imagenInicial, onChange }: Props) {
+export default function SubirImagen({
+  imagenInicial,
+  onChange,
+  onEliminar,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [vista, setVista] = useState<string | null>(imagenInicial ?? null);
   const [arrastrando, setArrastrando] = useState(false);
@@ -21,8 +26,13 @@ export default function SubirImagen({ imagenInicial, onChange }: Props) {
     e.stopPropagation();
     setVista(null);
     if (inputRef.current) inputRef.current.value = "";
+    onEliminar?.();
     onChange?.(null);
   };
+
+  useEffect(() => {
+    setVista(imagenInicial ?? null);
+  }, [imagenInicial]);
 
   const manejarUrl = async (url: string) => {
     try {

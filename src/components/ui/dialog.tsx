@@ -5,11 +5,34 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 
+let dialogsAbiertos = 0;
+
 function Dialog({
   modal = false,
+  onOpenChange,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" modal={modal} {...props} />;
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      dialogsAbiertos++;
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      dialogsAbiertos--;
+      if (dialogsAbiertos === 0) {
+        document.documentElement.style.overflow = "";
+      }
+    }
+    onOpenChange?.(open);
+  };
+
+  return (
+    <DialogPrimitive.Root
+      data-slot="dialog"
+      modal={modal}
+      onOpenChange={handleOpenChange}
+      {...props}
+    />
+  );
 }
 
 function DialogTrigger({
