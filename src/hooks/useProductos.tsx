@@ -148,6 +148,7 @@ export default function useProductos(
     producto,
     totalPaginas,
     cargando,
+    cargandoDetalle,
     obtenerTodos,
     obtenerUno,
     crearProducto,

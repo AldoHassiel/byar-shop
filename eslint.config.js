@@ -42,7 +42,7 @@ export default defineConfig([
 
       "no-console": "off",
       "no-empty": "off",
-      "no-unused-vars": "off",
+      "no-unused-vars": "warn",
     },
   },
 ]);

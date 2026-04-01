@@ -17,7 +17,7 @@ export default function DetalleProductos() {
       <section className="flex gap-8 px-50">
         <div className="bg-white rounded-2xl p-8 flex items-center justify-center shrink-0">
           <img
-            src={producto?.imagen_url}
+            src={producto?.imagen_url ?? ""}
             alt="Imagen del producto"
             className="max-w-sm max-h-96 object-contain"
           />

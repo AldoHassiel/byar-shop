@@ -11,13 +11,13 @@ import {
 interface ContextoAutenticacionTipo {
   usuario: Usuario | null;
   cargando: boolean;
-  iniciarSesion: (correo: string, pwd: string) => Promise<boolean>;
+  iniciarSesion: (correo: string, pwd: string) => Promise<boolean | undefined>;
   registrarCuenta: (
     nombre: string,
     apellidos: string,
     correo: string,
     pwd: string,
-  ) => Promise<boolean>;
+  ) => Promise<boolean | undefined>;
 
   cerrarSesion: () => void;
 }
@@ -30,7 +30,7 @@ interface Props {
 }
 
 export function ProveedorAutenticacion({ children }: Props) {
-  const [usuario, setUsuario] = useState<Usuario>(null);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {

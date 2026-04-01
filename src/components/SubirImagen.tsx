@@ -2,7 +2,7 @@ import { ImageUpIcon, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 interface Props {
-  imagenInicial?: string;
+  imagenInicial?: string | null;
   onChange?: (archivo: File | null) => void;
   onEliminar?: () => void;
 }

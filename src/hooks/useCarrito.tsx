@@ -14,6 +14,8 @@ export default function useCarrito(idDireccionInicial?: number) {
     idDireccion?: number,
     mostrarNotificacion = true,
   ) => {
+    if(!usuario?.id) return;
+
     const datos = await apiCarrito.obtenerCarrito(
       usuario?.id,
       idDireccion,
@@ -37,6 +39,7 @@ export default function useCarrito(idDireccionInicial?: number) {
     cantidad: number,
     mostrarNotificacion: boolean = true,
   ) => {
+    if (!usuario?.id) return;
     setCargando(true);
     await apiCarrito.agregarAlCarrito(
       usuario?.id,
@@ -53,6 +56,7 @@ export default function useCarrito(idDireccionInicial?: number) {
     delta: number,
     mostrarNotificacion: boolean = true,
   ) => {
+    if (!usuario?.id) return;
     setCargando(true);
     await apiCarrito.actualizarCantidad(
       usuario?.id,
@@ -68,6 +72,7 @@ export default function useCarrito(idDireccionInicial?: number) {
     idProducto: number,
     mostrarNotificacion: boolean = true,
   ) => {
+    if (!usuario?.id) return;
     setCargando(true);
     await apiCarrito.eliminarProducto(
       usuario?.id,

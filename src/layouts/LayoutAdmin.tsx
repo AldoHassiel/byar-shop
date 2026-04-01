@@ -97,7 +97,7 @@ export default function LayoutAdmin() {
         </main>
       </div>
 
-      <Footer negocio={negocio} />
+      {negocio && <Footer negocio={negocio} />}
       <Toaster />
     </div>
   );

@@ -16,7 +16,7 @@ export default function LayoutCliente() {
       <main className="bg-orange-300">
         <Outlet />
       </main>
-      <Footer negocio={negocio} />
+      {negocio && <Footer negocio={negocio} />}
       <Toaster />
     </div>
   );

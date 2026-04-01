@@ -120,7 +120,7 @@ export default function ModalProducto({
 
     if (editar) {
       const datos: ProductoEditadoFormulario = {
-        id: detalle?.id,
+        id: detalle?.id ?? 0,
         nombre,
         descripcion,
         precio: Number(precio),
