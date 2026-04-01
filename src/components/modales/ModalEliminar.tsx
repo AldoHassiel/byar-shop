@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { useState } from "react";
 
 interface Props {
   titulo: string;
@@ -37,9 +38,11 @@ export default function ModalEliminar({
   accion,
   alerta,
 }: Props) {
+  const [abiertoDialog, setAbiertoDialog] = useState(false);
+
   if (!alerta)
     return (
-      <Dialog>
+      <Dialog open={abiertoDialog} onOpenChange={setAbiertoDialog}>
         <DialogTrigger asChild>
           <TrashIcon
             size={24}
@@ -73,7 +76,15 @@ export default function ModalEliminar({
             <DialogClose asChild>
               <Button variant="outline">Cancelar</Button>
             </DialogClose>
-            <Button variant="pink">Eliminar</Button>
+            <Button
+              variant="pink"
+              onClick={() => {
+                accion();
+                setAbiertoDialog(false);
+              }}
+            >
+              Eliminar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
