@@ -1,15 +1,21 @@
 import ModalEliminar from "@/components/modales/ModalEliminar";
 import ModalProducto from "@/components/modales/ModalProducto";
+import Paginacion from "@/components/Paginacion";
 import { Spinner } from "@/components/ui/spinner";
 import useCategorias from "@/hooks/useCategorias";
 import useMarcas from "@/hooks/useMarca";
 import useProductos from "@/hooks/useProductos";
 import useSubcategorias from "@/hooks/useSubcategorias";
+import { useEffect, useState } from "react";
+
+const LIMITE = 10;
 
 export default function GestionProductos() {
   const {
     productos,
     cargando,
+    totalPaginas,
+    obtenerTodos,
     crearProducto,
     editarProducto,
     eliminarProducto,
@@ -18,6 +24,21 @@ export default function GestionProductos() {
   const { categorias } = useCategorias();
   const { subCategorias } = useSubcategorias();
   const { marcas } = useMarcas();
+  const [paginaActual, setPaginaActual] = useState(1);
+
+  useEffect(() => {
+    obtenerTodos(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      paginaActual,
+      LIMITE,
+    );
+  }, [obtenerTodos, paginaActual]);
 
   return (
     <>
@@ -106,6 +127,13 @@ export default function GestionProductos() {
               </table>
             </section>
           ))}
+
+          <Paginacion
+            paginaActual={paginaActual}
+            totalPaginas={totalPaginas}
+            onCambiarPagina={setPaginaActual}
+            className="mb-6"
+          />
         </div>
       )}
     </>
