@@ -16,10 +16,12 @@ import {
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router";
 import Corazon from "@/components/Corazon";
+import Paginacion from "@/components/Paginacion";
+const limite = 10;
 
 export default function Productos() {
   const [searchParams] = useSearchParams();
-  const { productos, cargando, obtenerTodos } = useProductos();
+  const { productos, cargando,totalPaginas, obtenerTodos } = useProductos();
 
   const { categorias } = useCategorias();
   const { subCategorias } = useSubcategorias();
@@ -31,6 +33,7 @@ export default function Productos() {
   const [idCategoria, setIdCategoria] = useState<number | undefined>();
   const [idSubcategoria, setIdSubcategoria] = useState<number | undefined>();
   const [precioSeleccionado, setPrecioSeleccionado] = useState("all");
+  const [paginaActual, setPaginaActual] = useState(1);
 
   const rangosPrecios = [
     { label: "Menos de $100", min: 1, max: 100 },
@@ -46,6 +49,7 @@ export default function Productos() {
   ];
 
   useEffect(() => {
+    setPaginaActual(1);
     const categoriaParam = searchParams.get("idCategoria");
     const subcategoriaParam = searchParams.get("idSubcategoria");
 
@@ -69,6 +73,10 @@ export default function Productos() {
   }, [searchParams]);
 
   useEffect(() => {
+    setPaginaActual(1);
+  }, [precioMin, precioMax, idMarca, idCategoria, idSubcategoria]);
+
+  useEffect(() => {
     obtenerTodos(
       undefined,
       undefined,
@@ -77,8 +85,10 @@ export default function Productos() {
       idMarca,
       idCategoria,
       idSubcategoria,
+      paginaActual,
+      limite,
     );
-  }, [precioMin, precioMax, idMarca, idCategoria, idSubcategoria]);
+  }, [precioMin, precioMax, idMarca, idCategoria, idSubcategoria, paginaActual, limite]);
 
   const nombreCategoriaSeleccionada = categorias.find(
     (cat) => cat.id === idCategoria,
@@ -206,7 +216,10 @@ export default function Productos() {
       {/* GRID DE PRODUCTOS */}
       <div className="grid grid-cols-4 gap-6 px-6 pb-6">
         {productos.map((producto) => (
-          <Card className="rounded-2xl shadow-sm border bg-white overflow-hidden hover:shadow-md transition">
+          <Card
+            key={producto.id}
+            className="rounded-2xl shadow-sm border bg-white overflow-hidden hover:shadow-md transition"
+          >
             {/* Imagen */}
             <Link to={`/productos/${producto.id}`}>
               <div className="w-full h-56 bg-white-100 flex items-center justify-center">
@@ -240,6 +253,13 @@ export default function Productos() {
           </Card>
         ))}
       </div>
+      <Paginacion
+        paginaActual={paginaActual}
+        totalPaginas={totalPaginas}
+        onCambiarPagina={setPaginaActual}
+        className="mb-12"
+      />
+
     </div>
   );
 }
