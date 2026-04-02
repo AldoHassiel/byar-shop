@@ -1,34 +1,101 @@
 import { apiSubcategorias } from "@/api/subcategorias.api";
 import type {
-    Subcategorias,
-    //CategoriaDTO
+  SubcategoriaDTO,
+  Subcategorias,
+  SubcategoriasDTO,
 } from "@/types/subcategoria";
 import { useEffect, useState } from "react";
 
-export default function useSubcategorias() {
-    const [subCategorias, setSubCategorias] = useState<Subcategorias[]>([]);
-    //const [subcategoria, setSubcategoria] = useState<Subcategorias>();
-    const [cargandoSubcategorias, setCargando] = useState(true);
+interface Props {
+  sinArbol?: boolean;
+}
 
-    const obtenerSubcategorias = async (mostrarNotificacion?: true) => {
-        setCargando(true);
+export default function useSubcategorias(props?: Props) {
+  const [subCategorias, setSubCategorias] = useState<Subcategorias[]>([]);
+  const [subCategoriasNormal, setSubCategoriasNormal] = useState<
+    SubcategoriasDTO[]
+  >([]);
+  const [cargandoSubcategorias, setCargando] = useState(true);
 
-        const datos = await apiSubcategorias.obtenerTodas(mostrarNotificacion);
+  const recargar = async () => {
+    const datos = await apiSubcategorias.obtenerSubcategorias(false);
+    if (datos) {
+      setSubCategoriasNormal(datos);
+    }
+  };
 
-        if (datos) {
-            setSubCategorias(datos);
-        }
+  const obtenerSubcategorias = async (mostrarNotificacion: boolean = false) => {
+    setCargando(true);
+    const datos = await apiSubcategorias.obtenerTodas(mostrarNotificacion);
+    if (datos) {
+      setSubCategorias(datos);
+    }
+    setCargando(false);
+  };
 
-        setCargando(false);
-    };
+  const obtenerSubcategoriasNormal = async (
+    mostrarNotificacion: boolean = false,
+  ) => {
+    setCargando(true);
+    const datos =
+      await apiSubcategorias.obtenerSubcategorias(mostrarNotificacion);
+    if (datos) {
+      setSubCategoriasNormal(datos);
+    }
+    setCargando(false);
+  };
 
-    useEffect(() => {
-        obtenerSubcategorias();
-    }, []);
+  const crearSubcategoria = async (
+    datos: SubcategoriaDTO,
+    mostrarNotificacion: boolean = true,
+  ) => {
+    setCargando(true);
+    const resultado = await apiSubcategorias.crear(datos, mostrarNotificacion);
+    if (resultado) {
+      recargar();
+    }
+    setCargando(false);
+  };
 
-    return {
-        subCategorias,
-        cargandoSubcategorias,
-        obtenerSubcategorias,
-    };
+  const editarSubcategoria = async (
+    datos: SubcategoriaDTO,
+    mostrarNotificacion: boolean = true,
+  ) => {
+    setCargando(true);
+    const resultado = await apiSubcategorias.editar(datos, mostrarNotificacion);
+    if (resultado) {
+      recargar();
+    }
+    setCargando(false);
+  };
+
+  const eliminarSubcategoria = async (
+    id: number,
+    mostrarNotificacion: boolean = true,
+  ) => {
+    setCargando(true);
+    const resultado = await apiSubcategorias.eliminar(id, mostrarNotificacion);
+    if (resultado) {
+      recargar();
+    }
+    setCargando(false);
+  };
+
+  useEffect(() => {
+    if (props && props.sinArbol) {
+      obtenerSubcategoriasNormal();
+    } else {
+      obtenerSubcategorias();
+    }
+  }, []);
+
+  return {
+    subCategorias,
+    subCategoriasNormal,
+    cargandoSubcategorias,
+    obtenerSubcategorias,
+    crearSubcategoria,
+    editarSubcategoria,
+    eliminarSubcategoria,
+  };
 }
