@@ -175,9 +175,50 @@ const editarPwd = async (
   }
 };
 
+const eliminarCuenta = async (
+  idUsuario: number,
+  mostrarNotificacion: boolean = false,
+) => {
+  try {
+    const respuestaHttp = await api.delete<ApiRespuesta<null>>(
+      `/usuario/${idUsuario}/misDatos/cuenta`,
+    );
+
+    const respuestaAPI = respuestaHttp.data;
+
+    if (!respuestaAPI.estado) {
+      toast.error(respuestaAPI.mensaje, { position: "bottom-right" });
+      return null;
+    }
+
+    if (respuestaAPI.estado && mostrarNotificacion) {
+      toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
+    }
+
+    return respuestaAPI.estado;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const { mensaje, datos } = error.response.data;
+
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
+
+      toast.error(mensaje, {
+        duration: 4000,
+      });
+    } else {
+      toast.error("No se pudo hacer la petición", { position: "bottom-right" });
+    }
+    return null;
+  }
+};
+
 export const apiMisDatos = {
   obtener,
   editarDatosGenerales,
   editarCorreo,
   editarPwd,
+  eliminarCuenta,
 };

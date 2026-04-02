@@ -4,7 +4,7 @@ import type { MisDatos } from "@/types/mis-datos";
 import { useEffect, useState } from "react";
 
 export default function useMisDatos() {
-  const { usuario, setUsuario } = useAutenticacion();
+  const { usuario, setUsuario, cerrarSesion } = useAutenticacion();
   const [datos, setDatos] = useState<MisDatos | null>(null);
   const [cargando, setCargando] = useState(false);
 
@@ -51,6 +51,19 @@ export default function useMisDatos() {
     return respuesta;
   };
 
+  const eliminarCuenta = async () => {
+    if (!usuario) return;
+    setCargando(true);
+    const respuesta = await apiMisDatos.eliminarCuenta(usuario.id, true);
+    
+    if (respuesta) {
+      cerrarSesion();
+    }
+    
+    setCargando(false);
+    return respuesta;
+  };
+
   useEffect(() => {
     if (!usuario) return;
     setCargando(true);
@@ -67,5 +80,6 @@ export default function useMisDatos() {
     editarDatosGenerales,
     editarCorreo,
     editarPwd,
+    eliminarCuenta,
   };
 }

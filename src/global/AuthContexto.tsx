@@ -84,8 +84,9 @@ export function ProveedorAutenticacion({ children }: Props) {
     return respuesta?.estado;
   };
 
-  const cerrarSesion = () => {
+  const cerrarSesion = async () => {
     setCargando(true);
+    await apiAuth.cerrarSesion();
     setUsuario(null);
     localStorage.removeItem("usuario");
     localStorage.removeItem("token");
