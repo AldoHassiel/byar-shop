@@ -6,8 +6,8 @@ export interface InicioSesion {
 export interface Usuario {
   id: number;
   nombre: string;
-  apellidos: any;
-  telefono: any;
+  apellidos: string;
+  telefono: string | null;
   correo: string;
   es_admin: boolean;
   activo: boolean;

@@ -1,18 +1,19 @@
 import { toast } from "sonner";
 import api from "./api.config";
-import type { ApiRespuesta } from "@/types/api";
-import type { Carrito } from "@/types/carrito";
 import axios from "axios";
+import { mostrarErroresZod } from "@/lib/validaciones.zod";
+import type { ApiRespuesta } from "@/types/api";
+import type { MisDatos } from "@/types/mis-datos";
 
-const obtenerCarrito = async (
+const obtener = async (
   idUsuario: number,
-  idDireccion?: number,
-  mostrarNotificacion: boolean = true,
+  mostrarNotificacion: boolean = false,
 ) => {
   try {
-    const respuestaHttp = await api.get<ApiRespuesta<Carrito>>(
-      `/usuario/${idUsuario}/carrito?id_direccion=${idDireccion ?? ""}`,
+    const respuestaHttp = await api.get<ApiRespuesta<MisDatos>>(
+      `/usuario/${idUsuario}/misDatos`,
     );
+
     const respuestaAPI = respuestaHttp.data;
 
     if (!respuestaAPI.estado) {
@@ -27,31 +28,38 @@ const obtenerCarrito = async (
     return respuestaAPI.datos[0];
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      const { mensaje } = error.response.data;
+      const { mensaje, datos } = error.response.data;
+
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
+
       toast.error(mensaje, {
         duration: 4000,
       });
+    } else {
+      toast.error("No se pudo hacer la petición", { position: "bottom-right" });
     }
-
-    toast.error("No se pudo hacer la petición", { position: "bottom-right" });
     return null;
   }
 };
 
-const agregarAlCarrito = async (
+const editarDatosGenerales = async (
   idUsuario: number,
-  idProducto: number,
-  cantidad: number,
-  mostrarNotificacion: boolean = true,
+  datos: MisDatos,
+  mostrarNotificacion: boolean = false,
 ) => {
   try {
-    const respuestaHttp = await api.post<ApiRespuesta<null>>(
-      `/usuario/${idUsuario}/carrito`,
+    const respuestaHttp = await api.put<ApiRespuesta<null>>(
+      `/usuario/${idUsuario}/misDatos/editar`,
       {
-        id_producto: idProducto,
-        cantidad,
+        nombre: datos.nombre,
+        apellidos: datos.apellidos,
+        telefono: datos.telefono,
       },
     );
+
     const respuestaAPI = respuestaHttp.data;
 
     if (!respuestaAPI.estado) {
@@ -66,30 +74,34 @@ const agregarAlCarrito = async (
     return respuestaAPI.estado;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      const { mensaje } = error.response.data;
+      const { mensaje, datos } = error.response.data;
+
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
+
       toast.error(mensaje, {
         duration: 4000,
       });
+    } else {
+      toast.error("No se pudo hacer la petición", { position: "bottom-right" });
     }
-
-    toast.error("No se pudo hacer la petición", { position: "bottom-right" });
     return null;
   }
 };
 
-const actualizarCantidad = async (
+const editarCorreo = async (
   idUsuario: number,
-  idProducto: number,
-  delta: number,
-  mostrarNotificacion: boolean = true,
+  correo: string,
+  mostrarNotificacion: boolean = false,
 ) => {
   try {
     const respuestaHttp = await api.patch<ApiRespuesta<null>>(
-      `/usuario/${idUsuario}/carrito/${idProducto}`,
-      {
-        delta,
-      },
+      `/usuario/${idUsuario}/misDatos/correo`,
+      { correo },
     );
+
     const respuestaAPI = respuestaHttp.data;
 
     if (!respuestaAPI.estado) {
@@ -104,26 +116,34 @@ const actualizarCantidad = async (
     return respuestaAPI.estado;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      const { mensaje } = error.response.data;
+      const { mensaje, datos } = error.response.data;
+
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
+
       toast.error(mensaje, {
         duration: 4000,
       });
+    } else {
+      toast.error("No se pudo hacer la petición", { position: "bottom-right" });
     }
-    console.error(error);
-    toast.error("No se pudo hacer la petición", { position: "bottom-right" });
     return null;
   }
 };
 
-const eliminarProducto = async (
+const editarPwd = async (
   idUsuario: number,
-  idProducto: number,
-  mostrarNotificacion: boolean = true,
+  pwd: string,
+  mostrarNotificacion: boolean = false,
 ) => {
   try {
-    const respuestaHttp = await api.delete<ApiRespuesta<null>>(
-      `/usuario/${idUsuario}/carrito/${idProducto}`,
+    const respuestaHttp = await api.patch<ApiRespuesta<null>>(
+      `/usuario/${idUsuario}/misDatos/pwd`,
+      { pwd },
     );
+
     const respuestaAPI = respuestaHttp.data;
 
     if (!respuestaAPI.estado) {
@@ -138,20 +158,26 @@ const eliminarProducto = async (
     return respuestaAPI.estado;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      const { mensaje } = error.response.data;
+      const { mensaje, datos } = error.response.data;
+
+      if (mensaje === "Error de validaciones") {
+        mostrarErroresZod(datos);
+        return null;
+      }
+
       toast.error(mensaje, {
         duration: 4000,
       });
+    } else {
+      toast.error("No se pudo hacer la petición", { position: "bottom-right" });
     }
-
-    toast.error("No se pudo hacer la petición", { position: "bottom-right" });
     return null;
   }
 };
 
-export const apiCarrito = {
-  obtenerCarrito,
-  agregarAlCarrito,
-  actualizarCantidad,
-  eliminarProducto,
+export const apiMisDatos = {
+  obtener,
+  editarDatosGenerales,
+  editarCorreo,
+  editarPwd,
 };

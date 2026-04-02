@@ -20,6 +20,8 @@ interface ContextoAutenticacionTipo {
   ) => Promise<boolean | undefined>;
 
   cerrarSesion: () => void;
+
+  setUsuario: React.Dispatch<React.SetStateAction<Usuario | null>>;
 }
 
 export const ContextoAutenticacion =
@@ -98,6 +100,7 @@ export function ProveedorAutenticacion({ children }: Props) {
         iniciarSesion,
         registrarCuenta,
         cerrarSesion,
+        setUsuario,
       }}
     >
       {children}
