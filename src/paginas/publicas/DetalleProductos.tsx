@@ -7,10 +7,10 @@ import { useState } from "react";
 
 export default function DetalleProductos() {
   const { id } = useParams();
-  const { producto, cargando } = useProductos(Number(id));
+  const { producto, cargandoDetalle } = useProductos(Number(id));
   const [cantidad, setCantidad] = useState(1);
 
-  if (cargando) return <p className="mt-20 p-6">Cargando...</p>;
+  if (cargandoDetalle) return <p className="mt-20 p-6">Cargando...</p>;
 
   return (
     <div className="bg-fondogris px-10 py-10 mt-20">
