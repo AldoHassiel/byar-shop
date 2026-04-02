@@ -9,6 +9,9 @@ export interface Producto {
   nombre_subcategoria: string;
   nombre_marca: string;
   es_favorito: boolean;
+  id_categoria: number;
+  id_subcategoria: number;
+  id_marca: number;
 }
 
 export interface ProductoDetallado {
