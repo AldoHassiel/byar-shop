@@ -29,13 +29,11 @@ import {
 } from "../ui/input-group";
 import SubirImagen from "../SubirImagen";
 import { useEffect, useState } from "react";
-import useCategorias from "@/hooks/useCategorias";
-import useSubcategorias from "@/hooks/useSubcategorias";
-import useMarcas from "@/hooks/useMarca";
 import type { Categorias } from "@/types/categorias";
 import type { Subcategorias } from "@/types/subcategoria";
 import type { Marcas } from "@/types/marcas";
 import type {
+  Producto,
   ProductoDetallado,
   ProductoEditadoFormulario,
   ProductoFormulario,
@@ -48,19 +46,19 @@ interface Prop {
     producto: ProductoFormulario | ProductoEditadoFormulario,
   ) => Promise<void>;
   editar?: boolean;
-  productoId?: number;
-  obtenerDetalle?: (id: number) => void;
-  detalle?: ProductoDetallado | null;
-  cargandoDetalle?: boolean;
+  producto?: Producto;
+  categorias: Categorias[];
+  subCategorias: Subcategorias[];
+  marcas: Marcas[];
 }
 
 export default function ModalProducto({
   accion,
   editar,
-  productoId,
-  obtenerDetalle,
-  detalle,
-  cargandoDetalle,
+  producto,
+  categorias,
+  subCategorias,
+  marcas,
 }: Prop) {
   const [abierto, setAbierto] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -72,10 +70,6 @@ export default function ModalProducto({
   const [marcaId, setMarcaId] = useState<number | null>(null);
   const [imagen, setImagen] = useState<File | null>(null);
   const [imagenEliminada, setImagenEliminada] = useState(false);
-
-  const { categorias } = useCategorias();
-  const { subCategorias } = useSubcategorias();
-  const { marcas } = useMarcas();
 
   const [cargando, setCargando] = useState(false);
 
@@ -120,7 +114,7 @@ export default function ModalProducto({
 
     if (editar) {
       const datos: ProductoEditadoFormulario = {
-        id: detalle?.id ?? 0,
+        id: producto?.id ?? 0,
         nombre,
         descripcion,
         precio: Number(precio),
@@ -154,41 +148,21 @@ export default function ModalProducto({
     return "conservar";
   };
 
-  const manejadorCambioDialog = (open: boolean) => {
-    if (open) {
-      setNombre("");
-      setDescripcion("");
-      setPrecio("100");
-      setStock("1");
-      setCategoriaId(null);
-      setSubcategoriaId(null);
-      setMarcaId(null);
-      setImagen(null);
-      setImagenEliminada(false);
-      setCargando(false);
-
-      if (editar && productoId) {
-        obtenerDetalle?.(productoId);
-      }
-    }
-    setAbierto(open);
-  };
-
   useEffect(() => {
-    if (editar && detalle && abierto) {
-      setNombre(detalle.nombre);
-      setDescripcion(detalle.descripcion ?? "");
-      setPrecio(String(detalle.precio));
-      setStock(String(detalle.stock));
-      setCategoriaId(detalle.id_categoria);
-      setSubcategoriaId(detalle.id_subcategoria);
-      setMarcaId(detalle.id_marca);
+    if (abierto) {
+      setNombre(producto?.nombre ?? "");
+      setDescripcion(producto?.descripcion ?? "");
+      setPrecio(String(producto?.precio || 100));
+      setStock(String(producto?.stock || 1));
+      setCategoriaId(producto?.id_categoria ?? null);
+      setSubcategoriaId(producto?.id_subcategoria ?? null);
+      setMarcaId(producto?.id_marca ?? null);
       setImagen(null);
     }
-  }, [detalle, editar, abierto]);
+  }, [abierto]);
 
   return (
-    <Dialog open={abierto} onOpenChange={manejadorCambioDialog}>
+    <Dialog open={abierto} onOpenChange={setAbierto}>
       <DialogTrigger asChild>
         {editar ? (
           <Pencil
@@ -208,124 +182,52 @@ export default function ModalProducto({
             {editar ? "Editando producto" : "Agregar producto"}
           </DialogTitle>
         </DialogHeader>
-        {editar && cargandoDetalle ? (
-          <div className="flex justify-center py-10">
-            <Spinner className="size-8 text-byar" />
-          </div>
-        ) : (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              manejador();
-            }}
-          >
-            <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll">
-              <FieldGroup>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            manejador();
+          }}
+        >
+          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll">
+            <FieldGroup>
+              <Field>
+                <Label htmlFor="nombre">Nombre del producto</Label>
+                <Input
+                  id="nombre"
+                  required
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <Label htmlFor="descripcion">Descripción</Label>
+                <Textarea
+                  id="descripcion"
+                  value={descripcion}
+                  onChange={(e) => setDescripcion(e.target.value)}
+                />
+              </Field>
+              <div className="flex gap-2">
                 <Field>
-                  <Label htmlFor="nombre">Nombre del producto</Label>
-                  <Input
-                    id="nombre"
-                    required
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
-                  />
-                </Field>
-                <Field>
-                  <Label htmlFor="descripcion">Descripción</Label>
-                  <Textarea
-                    id="descripcion"
-                    value={descripcion}
-                    onChange={(e) => setDescripcion(e.target.value)}
-                  />
-                </Field>
-                <div className="flex gap-2">
-                  <Field>
-                    <Label htmlFor="categoria">Categoría</Label>
-                    <Combobox
-                      id="categoria"
-                      value={
-                        categorias.find((c) => c.id === categoriaId) ?? null
-                      }
-                      items={categorias}
-                      itemToStringLabel={(cat: Categorias) => cat.nombre}
-                      itemToStringValue={(cat: Categorias) => cat.nombre}
-                      isItemEqualToValue={(a, b) => a.id === b.id}
-                      onValueChange={(cat: Categorias) => {
-                        setCategoriaId(cat?.id ?? null);
-                        setSubcategoriaId(null);
-                      }}
-                    >
-                      <ComboboxInput placeholder="Selecciona una" />
-                      <ComboboxContent>
-                        <ComboboxEmpty>No encontrada</ComboboxEmpty>
-                        <ComboboxList>
-                          {(item: Categorias) => (
-                            <ComboboxItem
-                              key={item.id}
-                              value={item}
-                              onPointerDown={(e) => e.preventDefault()}
-                            >
-                              {item.nombre}
-                            </ComboboxItem>
-                          )}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-                  </Field>
-                  <Field>
-                    <Label htmlFor="subcategoria">Subcategoría</Label>
-                    <Combobox
-                      id="subcategoria"
-                      value={
-                        subCategorias.find((s) => s.id === subcategoriaId) ??
-                        null
-                      }
-                      items={subCategorias.filter(
-                        (s: Subcategorias) => s?.id_categoria === categoriaId,
-                      )}
-                      itemToStringLabel={(sub: Subcategorias) => sub.nombre}
-                      itemToStringValue={(sub: Subcategorias) => sub.nombre}
-                      isItemEqualToValue={(a, b) => a.id === b.id}
-                      onValueChange={(sub: Subcategorias) =>
-                        setSubcategoriaId(sub?.id ?? null)
-                      }
-                    >
-                      <ComboboxInput placeholder="Selecciona una" />
-                      <ComboboxContent>
-                        <ComboboxEmpty>No encontrada</ComboboxEmpty>
-                        <ComboboxList>
-                          {(item: Subcategorias) => (
-                            <ComboboxItem
-                              key={item.id}
-                              value={item}
-                              onPointerDown={(e) => e.preventDefault()}
-                            >
-                              {item.nombre}
-                            </ComboboxItem>
-                          )}
-                        </ComboboxList>
-                      </ComboboxContent>
-                    </Combobox>
-                  </Field>
-                </div>
-                <Field>
-                  <Label htmlFor="marca">Marca</Label>
+                  <Label htmlFor="categoria">Categoría</Label>
                   <Combobox
-                    id="marca"
-                    value={marcas.find((m) => m.id === marcaId) ?? null}
-                    items={marcas}
-                    itemToStringLabel={(marca: Marcas) => marca.nombre}
-                    itemToStringValue={(marca: Marcas) => marca.nombre}
+                    id="categoria"
+                    value={categorias.find((c) => c.id === categoriaId) ?? null}
+                    items={categorias}
+                    itemToStringLabel={(cat: Categorias) => cat.nombre}
+                    itemToStringValue={(cat: Categorias) => cat.nombre}
                     isItemEqualToValue={(a, b) => a.id === b.id}
-                    onValueChange={(marca: Marcas) =>
-                      setMarcaId(marca?.id ?? null)
-                    }
+                    onValueChange={(cat: Categorias) => {
+                      setCategoriaId(cat?.id ?? null);
+                      setSubcategoriaId(null);
+                    }}
                   >
-                    <ComboboxInput placeholder="Selecciona una marca" />
+                    <ComboboxInput placeholder="Selecciona una" />
                     <ComboboxContent>
                       <ComboboxEmpty>No encontrada</ComboboxEmpty>
                       <ComboboxList>
-                        {(item: Marcas) => (
+                        {(item: Categorias) => (
                           <ComboboxItem
                             key={item.id}
                             value={item}
@@ -338,106 +240,170 @@ export default function ModalProducto({
                     </ComboboxContent>
                   </Combobox>
                 </Field>
-                <div className="flex gap-2">
-                  <Field>
-                    <Label htmlFor="precio">Precio</Label>
-                    <InputGroup>
-                      <InputGroupText className="pl-2">MXN</InputGroupText>
-                      <InputGroupInput
-                        id="precio"
-                        type="number"
-                        className="text-center"
-                        min="1"
-                        onKeyDown={(e) => {
-                          if (e.key === "-" || e.key === "e") {
-                            e.preventDefault();
-                          }
-                        }}
-                        value={precio}
-                        onChange={(e) => setPrecio(e.target.value)}
-                      />
-                    </InputGroup>
-                  </Field>
-                  <Field>
-                    <Label htmlFor="stockInicial">Stock inicial</Label>
-                    <InputGroup>
-                      <InputGroupAddon align="inline-start">
-                        <InputGroupButton
-                          onClick={() =>
-                            setStock((prev) =>
-                              String(Math.max(1, Number(prev) - 1)),
-                            )
-                          }
-                        >
-                          <MinusIcon />
-                        </InputGroupButton>
-                      </InputGroupAddon>
-                      <InputGroupInput
-                        className="text-center"
-                        id="stockInicial"
-                        type="number"
-                        min="1"
-                        step="1"
-                        onKeyDown={(e) => {
-                          if (
-                            e.key === "." ||
-                            e.key === "," ||
-                            e.key === "-" ||
-                            e.key === "e"
-                          ) {
-                            e.preventDefault();
-                          }
-                        }}
-                        value={stock}
-                        onChange={(e) => setStock(e.target.value)}
-                      />
-                      <InputGroupAddon align="inline-end">
-                        <InputGroupButton
-                          onClick={() =>
-                            setStock((prev) => String(Number(prev) + 1))
-                          }
-                        >
-                          <PlusIcon />
-                        </InputGroupButton>
-                      </InputGroupAddon>
-                    </InputGroup>
-                  </Field>
-                </div>
                 <Field>
-                  <Label>Imagen</Label>
-                  <SubirImagen
-                    onChange={(img) => {
-                      setImagen(img);
-                      if (img) setImagenEliminada(false);
-                    }}
-                    onEliminar={() => {
-                      setImagen(null);
-                      setImagenEliminada(true);
-                    }}
-                    imagenInicial={editar ? detalle?.imagen_url : ""}
-                  />
+                  <Label htmlFor="subcategoria">Subcategoría</Label>
+                  <Combobox
+                    id="subcategoria"
+                    value={
+                      subCategorias.find((s) => s.id === subcategoriaId) ?? null
+                    }
+                    items={subCategorias.filter(
+                      (s: Subcategorias) => s?.id_categoria === categoriaId,
+                    )}
+                    itemToStringLabel={(sub: Subcategorias) => sub.nombre}
+                    itemToStringValue={(sub: Subcategorias) => sub.nombre}
+                    isItemEqualToValue={(a, b) => a.id === b.id}
+                    onValueChange={(sub: Subcategorias) =>
+                      setSubcategoriaId(sub?.id ?? null)
+                    }
+                  >
+                    <ComboboxInput placeholder="Selecciona una" />
+                    <ComboboxContent>
+                      <ComboboxEmpty>No encontrada</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item: Subcategorias) => (
+                          <ComboboxItem
+                            key={item.id}
+                            value={item}
+                            onPointerDown={(e) => e.preventDefault()}
+                          >
+                            {item.nombre}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
                 </Field>
-              </FieldGroup>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="pink"
-                className="w-full"
-                type="submit"
-                disabled={cargando}
-              >
-                {cargando ? (
-                  <>
-                    <Spinner />
-                    {editar ? "Editando..." : "Creando..."}
-                  </>
-                ) : (
-                  <>{editar ? "Editar" : "Agregar"}</>
-                )}
-              </Button>
-            </DialogFooter>
-          </form>
-        )}
+              </div>
+              <Field>
+                <Label htmlFor="marca">Marca</Label>
+                <Combobox
+                  id="marca"
+                  value={marcas.find((m) => m.id === marcaId) ?? null}
+                  items={marcas}
+                  itemToStringLabel={(marca: Marcas) => marca.nombre}
+                  itemToStringValue={(marca: Marcas) => marca.nombre}
+                  isItemEqualToValue={(a, b) => a.id === b.id}
+                  onValueChange={(marca: Marcas) =>
+                    setMarcaId(marca?.id ?? null)
+                  }
+                >
+                  <ComboboxInput placeholder="Selecciona una marca" />
+                  <ComboboxContent>
+                    <ComboboxEmpty>No encontrada</ComboboxEmpty>
+                    <ComboboxList>
+                      {(item: Marcas) => (
+                        <ComboboxItem
+                          key={item.id}
+                          value={item}
+                          onPointerDown={(e) => e.preventDefault()}
+                        >
+                          {item.nombre}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </Field>
+              <div className="flex gap-2">
+                <Field>
+                  <Label htmlFor="precio">Precio</Label>
+                  <InputGroup>
+                    <InputGroupText className="pl-2">MXN</InputGroupText>
+                    <InputGroupInput
+                      id="precio"
+                      type="number"
+                      className="text-center"
+                      min="1"
+                      onKeyDown={(e) => {
+                        if (e.key === "-" || e.key === "e") {
+                          e.preventDefault();
+                        }
+                      }}
+                      value={precio}
+                      onChange={(e) => setPrecio(e.target.value)}
+                    />
+                  </InputGroup>
+                </Field>
+                <Field>
+                  <Label htmlFor="stockInicial">Stock inicial</Label>
+                  <InputGroup>
+                    <InputGroupAddon align="inline-start">
+                      <InputGroupButton
+                        onClick={() =>
+                          setStock((prev) =>
+                            String(Math.max(1, Number(prev) - 1)),
+                          )
+                        }
+                      >
+                        <MinusIcon />
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      className="text-center"
+                      id="stockInicial"
+                      type="number"
+                      min="1"
+                      step="1"
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "." ||
+                          e.key === "," ||
+                          e.key === "-" ||
+                          e.key === "e"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        onClick={() =>
+                          setStock((prev) => String(Number(prev) + 1))
+                        }
+                      >
+                        <PlusIcon />
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </Field>
+              </div>
+              <Field>
+                <Label>Imagen</Label>
+                <SubirImagen
+                  onChange={(img) => {
+                    setImagen(img);
+                    if (img) setImagenEliminada(false);
+                  }}
+                  onEliminar={() => {
+                    setImagen(null);
+                    setImagenEliminada(true);
+                  }}
+                  imagenInicial={editar ? producto?.imagen_url : ""}
+                />
+              </Field>
+            </FieldGroup>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="pink"
+              className="w-full"
+              type="submit"
+              disabled={cargando}
+            >
+              {cargando ? (
+                <>
+                  <Spinner />
+                  {editar ? "Editando..." : "Creando..."}
+                </>
+              ) : (
+                <>{editar ? "Editar" : "Agregar"}</>
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

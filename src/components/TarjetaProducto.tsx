@@ -55,7 +55,7 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
       <footer className="mt-auto flex justify-center gap-x-2">
         <Button className="rounded-2xl py-4 flex-1">Agregar al carrito</Button>
         <Button
-          variant="outline"
+          variant="outlineShadcn"
           className="rounded-2xl py-4"
           onClick={() => setEsFavorito((valorActual) => !valorActual)}
         >

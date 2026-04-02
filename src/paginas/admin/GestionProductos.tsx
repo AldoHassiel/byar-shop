@@ -1,25 +1,34 @@
 import ModalEliminar from "@/components/modales/ModalEliminar";
 import ModalProducto from "@/components/modales/ModalProducto";
 import { Spinner } from "@/components/ui/spinner";
+import useCategorias from "@/hooks/useCategorias";
+import useMarcas from "@/hooks/useMarca";
 import useProductos from "@/hooks/useProductos";
-import { Trash } from "lucide-react";
+import useSubcategorias from "@/hooks/useSubcategorias";
 
 export default function GestionProductos() {
   const {
     productos,
-    producto,
     cargando,
-    obtenerUno,
     crearProducto,
     editarProducto,
     eliminarProducto,
   } = useProductos();
 
+  const { categorias } = useCategorias();
+  const { subCategorias } = useSubcategorias();
+  const { marcas } = useMarcas();
+
   return (
     <>
       <div className="flex justify-between">
         <h2 className="text-4xl">Productos</h2>
-        <ModalProducto accion={crearProducto} />
+        <ModalProducto
+          accion={crearProducto}
+          categorias={categorias}
+          subCategorias={subCategorias}
+          marcas={marcas}
+        />
       </div>
 
       {cargando ? (
@@ -79,9 +88,10 @@ export default function GestionProductos() {
                         <ModalProducto
                           editar
                           accion={editarProducto}
-                          productoId={p.id}
-                          obtenerDetalle={obtenerUno}
-                          detalle={producto?.id === p.id ? producto : null}
+                          producto={p}
+                          categorias={categorias}
+                          subCategorias={subCategorias}
+                          marcas={marcas}
                         />
                         <ModalEliminar
                           titulo="Eliminar producto"

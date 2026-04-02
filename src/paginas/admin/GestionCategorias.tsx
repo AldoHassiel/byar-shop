@@ -70,8 +70,8 @@ export default function GestionCategorias() {
                           accion={editarCategoria}
                         />
                         <ModalEliminar
-                          titulo="Eliminar producto"
-                          descripcion={`¿Estas seguro que deseas eliminar el producto ${c.nombre}?`}
+                          titulo="Eliminar categoría"
+                          descripcion={`¿Estas seguro que deseas eliminar la categoría ${c.nombre}?`}
                           nombreResaltado={c.nombre}
                           accion={() => eliminarCategoria(c.id)}
                         />

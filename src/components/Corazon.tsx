@@ -12,7 +12,7 @@ export default function Corazon({ es_favorito }: Props) {
 
   return (
     <Button
-      variant="outline"
+      variant="outlineShadcn"
       className="rounded-2xl py-4"
       onClick={() => setEsFavorito((valorActual) => !valorActual)}
     >
