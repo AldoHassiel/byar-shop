@@ -11,9 +11,19 @@ export interface Subcategorias {
   };
 }
 
-export interface SubcategoriasDTO {
+export interface SubcategoriaDTO {
+  id?: number;
+  id_categoria: number;
   nombre: string;
   descripcion: string;
+}
+
+export interface SubcategoriasDTO {
+  id: number;
+  id_categoria: number;
+  nombre: string;
+  descripcion: string;
+  cant_producto: number;
 }
 
 export interface CategoriaConSubcategorias {
