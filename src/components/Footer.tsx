@@ -1,5 +1,6 @@
 import type { Negocio } from "@/types/negocio";
 import { CircleQuestionMark, Instagram, MapPin } from "lucide-react";
+import { Link } from "react-router";
 
 interface Props {
   negocio: Negocio;
@@ -30,8 +31,10 @@ export default function Footer({ negocio }: Props) {
   };
   return (
     <footer className="relative bg-byar px-10 py-7">
-      <div className="absolute top-10 right-10 text-white">
-        <CircleQuestionMark color="white" size={32} />
+      <div className="absolute top-10 right-10 text-white cursor-pointer">
+        <Link to="/preguntas-frecuentes">
+          <CircleQuestionMark color="white" size={32} />
+        </Link>
       </div>
 
       <div className="flex flex-col gap-3 max-w-xl">

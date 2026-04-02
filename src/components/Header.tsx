@@ -106,7 +106,7 @@ export default function Header() {
     <header className="fixed top-0 w-full z-50 h-20 flex items-center justify-between bg-byar/40 backdrop-blur-md border-b border-white/20 px-15">
       <Popover open={menuAbierto} onOpenChange={setMenuAbierto}>
         <PopoverTrigger asChild>
-          <button type="button" aria-label="Abrir menú de categorías">
+          <button type="button" aria-label="Abrir menú de categorías" className="cursor-pointer">
             <MenuIcon color="white" size={32} />
           </button>
         </PopoverTrigger>

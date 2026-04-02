@@ -27,6 +27,7 @@ import GestionNegocio from "../paginas/admin/GestionNegocio";
 import IniciarSesion from "../paginas/auth/IniciarSesion";
 import Registro from "../paginas/auth/Registro";
 import { RutaAdmin, RutaCliente } from "./RutasProtegidas";
+import PreguntasFrecuentes from "@/paginas/publicas/PreguntasFrecuentes";
 
 export default function Enrutador() {
   return (
@@ -36,6 +37,7 @@ export default function Enrutador() {
         <Route path="/productos" element={<Productos />} />
         <Route path="/productos/:id" element={<DetalleProductos />} />
         <Route path="/nosotros" element={<Nosotros />} />
+        <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentes />} />
       </Route>
 
       <Route element={<LayoutPrincipal />}>
