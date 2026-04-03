@@ -22,13 +22,13 @@ export default function Footer({ negocio }: Props) {
         </div>
 
         <a
-          href={negocio?.instagram}
+          href={`https://www.instagram.com/${negocio?.instagram}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2.5 text-white text-sm"
         >
           <Instagram size={22} strokeWidth={2.5} className="shrink-0" />
-          <span>{negocio?.instagram.split("/")[3] || "byar.shop"}</span>
+          <span>{negocio?.instagram}</span>
         </a>
 
         <a
@@ -52,8 +52,8 @@ export default function Footer({ negocio }: Props) {
       </div>
       <div>
         <p className="text-white text-center text-sm mt-6">
-          &copy; {new Date().getFullYear()} Byarshop. Todos los derechos
-          reservados.
+          &copy; {new Date().getFullYear()} {negocio?.nombre}. Todos los
+          derechos reservados.
         </p>
       </div>
     </footer>
