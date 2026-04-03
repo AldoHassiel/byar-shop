@@ -66,7 +66,7 @@ export default function SubirImagen({
         const url = e.dataTransfer.getData("text/uri-list");
         if (url) manejarUrl(url);
       }}
-      className={`relative rounded-2xl flex justify-center items-center h-50 border-2 border-dashed cursor-pointer border-byar transition-colors ${
+      className={`relative rounded-2xl flex justify-center items-center h-full border-2 border-dashed cursor-pointer border-byar transition-colors ${
         arrastrando && !vista
           ? "bg-byarclaro"
           : !vista
@@ -100,7 +100,7 @@ export default function SubirImagen({
           </button>
         </>
       ) : (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center p-5">
           <ImageUpIcon size={50} className="text-byar mb-2 text-center" />
           <span className="text-sm text-byar text-center w-50">
             Arrastra una imagen o haz clic para seleccionar una
