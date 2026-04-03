@@ -13,7 +13,7 @@ export default function LayoutPrincipal() {
       <main>
         <Outlet context={{ negocio, cargando }} />
       </main>
-      {negocio && <Footer negocio={negocio} />}
+      <Footer negocio={negocio} />
       <Toaster />
     </div>
   );
