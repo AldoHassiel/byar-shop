@@ -12,26 +12,7 @@ import { Medal } from "lucide-react";
 import { CreditCard } from "lucide-react";
 import { Rocket } from "lucide-react";
 import { useOutletContext } from "react-router";
-import nyar from "@/assets/Fotoinicio/ByarPLa.png";
-// import byart from "@/assets/byart.png";
-import imagenplazuela from "/WhatsApp Image 2026-03-25 at 7.04.18 AM (1).jpeg";
-const NEGOCIO_DEFAULT: Negocio = {
-  id: 0,
-  nombre: "Byarshop",
-  descripcion: "Tienda de productos extranjeros de calidad",
-  sobre_de: "Somos una tienda comprometida con la calidad.",
-  imagen_sobre_de_url: "",
-  instagram: "https://www.instagram.com/byar.shop",
-  direccion: "Plazuela 27 de Sep frente a la iglesia",
-  dias_laborales: "Viernes a Domingo",
-  hora_de_apertura: "6:30 AM",
-  hora_de_cierre: "10:00 PM",
-  hero_titulo: "Bienvenido a nuestra tienda",
-  hero_descripcion: "Descubre los mejores productos para ti.",
-  hero_imagen_url: "",
-};
-
-const noVacio = (v: unknown) => v !== null && v !== "" && v !== undefined;
+import byarhero from "@/assets/Fotoinicio/ByarPLa.png";
 
 export default function Inicio() {
   const { negocio, cargando } = useOutletContext<{
@@ -43,27 +24,16 @@ export default function Inicio() {
     limiteInicial: 8,
   });
 
-  const datos: Negocio = {
-    ...NEGOCIO_DEFAULT,
-    ...Object.fromEntries(
-      Object.entries(negocio ?? {}).filter(([_, v]) => noVacio(v)),
-    ),
-  };
-
   if (cargando) return <p className="mt-20 p-6">Cargando...</p>;
 
   return (
     <>
       <section className="relative w-full overflow-hidden">
         <img
-          src={nyar}
+          src={negocio?.hero_imagen_url || byarhero}
           alt="Hero"
           className="w-full h-[460px] sm:h-[620px] lg:h-[700px] 2xl:h-[900] object-cover object-center"
         />
-        {/* <div>
-          <h2 className="text-center text-4xl">{datos.hero_titulo}</h2>
-          <p className="text-center text-2xl ">{datos.hero_descripcion}</p>
-        </div> */}
       </section>
       <section className="bg-fondogris p-8">
         <h2 className="text-center text-4xl">Productos destacados</h2>
@@ -125,22 +95,21 @@ export default function Inicio() {
         <div className="flex justify-center items-center">
           {cargando ? (
             <div className="w-full max-w-md h-80 bg-gray-200 animate-pulse rounded-2xl" />
-          ) : datos.imagen_sobre_de_url || imagenplazuela ? (
+          ) : (
             <img
-              src={datos.imagen_sobre_de_url || imagenplazuela}
+              src={negocio?.imagen_sobre_nosotros_url || "/plazuela.jpeg"}
               alt="Imagen del negocio"
               className="w-full max-w-md h-80 object-cover rounded-2xl"
             />
-          ) : (
-            <div className="w-full max-w-md h-80 bg-gray-200 rounded-2xl" />
           )}
         </div>
         <div>
           <h2 className="text-center font-bold text-4xl">
-            Sobre {datos?.nombre}
+            Sobre {negocio?.nombre || "byarshop"}
           </h2>
           <p className="text-justify ml-4 mr-4 text-2xl mt-5">
-            {datos?.sobre_de}
+            {negocio?.sobre_nosotros ||
+              "En Byarshop somos apasionados por traerte lo mejor del mundo. Nos especializamos en productos extranjeros de alta calidad, cuidadosamente seleccionados para ofrecerte una experiencia de compra única. Nos encontramos en el corazón de la ciudad, frente a la iglesia de la Plazuela 27 de Sep, donde cada fin de semana abrimos nuestras puertas para que descubras artículos exclusivos que no encontrarás en ningún otro lugar. ¡Ven y vive la experiencia Byarshop!"}
           </p>
         </div>
       </section>

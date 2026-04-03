@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { useAutenticacion } from "@/global/AuthContexto";
-import useNegocio from "@/hooks/useNegocio";
+import { useNegocio } from "@/global/NegocioContexto";
 import {
   Building2,
   IdCard,
@@ -43,7 +43,7 @@ export default function LayoutAdmin() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header nombre={negocio?.nombre} />
 
       <div className="flex flex-1 gap-10 mx-10 my-5 mt-25">
         <aside className="bg-white rounded-2xl w-64 shrink-0 p-5 flex flex-col">
@@ -97,7 +97,7 @@ export default function LayoutAdmin() {
         </main>
       </div>
 
-      {negocio && <Footer negocio={negocio} />}
+      <Footer negocio={negocio} />
       <Toaster />
     </div>
   );

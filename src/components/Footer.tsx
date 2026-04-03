@@ -1,34 +1,13 @@
+import { a12horas } from "@/lib/conversiones";
 import type { Negocio } from "@/types/negocio";
 import { CircleQuestionMark, Instagram, MapPin } from "lucide-react";
 import { Link } from "react-router";
 
 interface Props {
-  negocio: Negocio;
+  negocio: Negocio | undefined;
 }
-const NEGOCIO_DEFAULT: Negocio = {
-  id: 0,
-  nombre: "Byarshop",
-  descripcion: "Tienda de productos extranjeros de calidad",
-  sobre_de: "Somos una tienda comprometida con la calidad.",
-  imagen_sobre_de_url: "",
-  instagram: "https://www.instagram.com/byar.shop",
-  direccion: "Plazuela 27 de Sep frente a la iglesia",
-  dias_laborales: "Viernes a Domingo",
-  hora_de_apertura: "6:30 AM",
-  hora_de_cierre: "10:00 PM",
-  hero_titulo: "Bienvenido a nuestra tienda",
-  hero_descripcion: "Descubre los mejores productos para ti.",
-  hero_imagen_url: "",
-};
-const noVacio = (v: unknown) => v !== null && v !== "" && v !== undefined;
 
 export default function Footer({ negocio }: Props) {
-  const datos: Negocio = {
-    ...NEGOCIO_DEFAULT,
-    ...Object.fromEntries(
-      Object.entries(negocio ?? {}).filter(([_, v]) => noVacio(v)),
-    ),
-  };
   return (
     <footer className="relative bg-byar px-10 py-7">
       <div className="absolute top-10 right-10 text-white cursor-pointer">
@@ -43,13 +22,13 @@ export default function Footer({ negocio }: Props) {
         </div>
 
         <a
-          href={datos.instagram}
+          href={`https://www.instagram.com/${negocio?.instagram}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2.5 text-white text-sm"
         >
           <Instagram size={22} strokeWidth={2.5} className="shrink-0" />
-          <span>byar.shop</span>
+          <span>{negocio?.instagram}</span>
         </a>
 
         <a
@@ -60,11 +39,12 @@ export default function Footer({ negocio }: Props) {
         >
           <MapPin size={22} strokeWidth={2.5} className="shrink-0 mt-0.5" />
           <div className="flex flex-col leading-snug">
-            <span>{datos.direccion}</span>
+            <span>{negocio?.direccion}</span>
             <div className="space-x-2">
-              <span>{datos.dias_laborales}</span>
+              <span>{negocio?.dias_laborales || "Viernes a Domingo"}</span>
               <span>
-                {datos.hora_de_apertura} a {datos.hora_de_cierre}
+                {a12horas(negocio?.hora_de_apertura || "17:00")} a{" "}
+                {a12horas(negocio?.hora_de_cierre || "22:00")}
               </span>
             </div>
           </div>
@@ -72,8 +52,8 @@ export default function Footer({ negocio }: Props) {
       </div>
       <div>
         <p className="text-white text-center text-sm mt-6">
-          &copy; {new Date().getFullYear()} Byarshop. Todos los derechos
-          reservados.
+          &copy; {new Date().getFullYear()} {negocio?.nombre}. Todos los
+          derechos reservados.
         </p>
       </div>
     </footer>

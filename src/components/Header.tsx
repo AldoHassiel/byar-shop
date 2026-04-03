@@ -26,13 +26,17 @@ import {
 } from "@/components/ui/accordion";
 import { useAutenticacion } from "@/global/AuthContexto";
 
-export default function Header() {
+interface Props {
+  nombre: string | undefined;
+}
+
+export default function Header({ nombre }: Props) {
   const { usuario } = useAutenticacion();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [categoriaExpandida, setCategoriaExpandida] = useState<number | null>(
     null,
   );
-  const { categorias, cargandoCategorias } = useCategorias();
+  const { categorias, cargando: cargandoCategorias } = useCategorias();
   const { subCategorias, cargandoSubcategorias } = useSubcategorias();
 
   useEffect(() => {
@@ -106,7 +110,11 @@ export default function Header() {
     <header className="fixed top-0 w-full z-50 h-20 flex items-center justify-between bg-byar/40 backdrop-blur-md border-b border-white/20 px-15">
       <Popover open={menuAbierto} onOpenChange={setMenuAbierto}>
         <PopoverTrigger asChild>
-          <button type="button" aria-label="Abrir menú de categorías" className="cursor-pointer">
+          <button
+            type="button"
+            aria-label="Abrir menú de categorías"
+            className="cursor-pointer"
+          >
             <MenuIcon color="white" size={32} />
           </button>
         </PopoverTrigger>
@@ -222,7 +230,9 @@ export default function Header() {
       </Popover>
 
       <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-        <h1 className="text-[65px] text-white font-titulo mt-2">byarshop</h1>
+        <h1 className="text-[65px] text-white font-titulo mt-2">
+          {nombre || "byarshop"}
+        </h1>
       </Link>
       <nav className="flex items-center space-x-5">
         <Link to="/productos">

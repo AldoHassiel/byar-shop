@@ -4,9 +4,22 @@ import type {
   EditarImagenesNegocio,
   Negocio,
 } from "@/types/negocio";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-export default function useNegocio() {
+interface NegocioContexto {
+  negocio: Negocio | undefined;
+  cargando: boolean;
+  obtenerDatosNegocio: () => Promise<void>;
+  editarDatosNegocio: (
+    datos: EditarDatosNegocio,
+    imagenes?: EditarImagenesNegocio,
+    mostrarNotificacion?: boolean,
+  ) => Promise<void>;
+}
+
+const NegocioContext = createContext<NegocioContexto | undefined>(undefined);
+
+export function ProveedorNegocio({ children }: { children: React.ReactNode }) {
   const [negocio, setNegocio] = useState<Negocio>();
   const [cargando, setCargando] = useState(false);
 
@@ -41,5 +54,18 @@ export default function useNegocio() {
     obtenerDatosNegocio();
   }, []);
 
-  return { negocio, cargando, obtenerDatosNegocio, editarDatosNegocio };
+  return (
+    <NegocioContext.Provider
+      value={{ negocio, cargando, obtenerDatosNegocio, editarDatosNegocio }}
+    >
+      {children}
+    </NegocioContext.Provider>
+  );
+}
+
+export function useNegocio(): NegocioContexto {
+  const context = useContext(NegocioContext);
+  if (!context)
+    throw new Error("useNegocio debe usarse dentro de <NegocioProvider>");
+  return context;
 }
