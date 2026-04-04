@@ -1,7 +1,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
-import useNegocio from "@/hooks/useNegocio";
+import { useNegocio } from "@/global/NegocioContexto";
 import { Outlet } from "react-router";
 
 export default function LayoutPrincipal() {
@@ -9,11 +9,11 @@ export default function LayoutPrincipal() {
 
   return (
     <div>
-      <Header />
+      <Header nombre={ negocio?.nombre} />
       <main>
         <Outlet context={{ negocio, cargando }} />
       </main>
-      {negocio && <Footer negocio={negocio} />}
+      <Footer negocio={negocio} />
       <Toaster />
     </div>
   );
