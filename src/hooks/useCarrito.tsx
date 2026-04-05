@@ -3,7 +3,10 @@ import { useAutenticacion } from "@/global/AuthContexto";
 import type { Carrito } from "@/types/carrito";
 import { useEffect, useRef, useState } from "react";
 
-export default function useCarrito(idDireccionInicial?: number) {
+export default function useCarrito(
+  cargaInicial: boolean = true,
+  idDireccionInicial?: number,
+) {
   const [carrito, setCarrito] = useState<Carrito>();
   const idDireccionRef = useRef<number | undefined>(idDireccionInicial);
   const [cargando, setCargando] = useState(false);
@@ -12,9 +15,9 @@ export default function useCarrito(idDireccionInicial?: number) {
 
   const recargarCarrito = async (
     idDireccion?: number,
-    mostrarNotificacion = true,
+    mostrarNotificacion = false,
   ) => {
-    if(!usuario?.id) return;
+    if (!usuario?.id) return;
 
     const datos = await apiCarrito.obtenerCarrito(
       usuario?.id,
@@ -26,7 +29,7 @@ export default function useCarrito(idDireccionInicial?: number) {
 
   const obtenerCarrito = async (
     idDireccion?: number,
-    mostrarNotificacion: boolean = true,
+    mostrarNotificacion: boolean = false,
   ) => {
     idDireccionRef.current = idDireccion;
     setCargando(true);
@@ -54,18 +57,35 @@ export default function useCarrito(idDireccionInicial?: number) {
   const actualizarCantidad = async (
     idProducto: number,
     delta: number,
-    mostrarNotificacion: boolean = true,
+    mostrarNotificacion: boolean = false,
   ) => {
     if (!usuario?.id) return;
-    setCargando(true);
-    await apiCarrito.actualizarCantidad(
-      usuario?.id,
+
+    const carritoAnterior = carrito;
+
+    setCarrito((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        productos: prev.productos.map((p) =>
+          p.id === idProducto ? { ...p, cantidad: p.cantidad + delta } : p,
+        ),
+      };
+    });
+
+    const resultado = await apiCarrito.actualizarCantidad(
+      usuario.id,
       idProducto,
       delta,
       mostrarNotificacion,
     );
+
+    if (!resultado) {
+      setCarrito(carritoAnterior);
+      return;
+    }
+
     await recargarCarrito(idDireccionRef.current, false);
-    setCargando(false);
   };
 
   const eliminarProducto = async (
@@ -84,7 +104,7 @@ export default function useCarrito(idDireccionInicial?: number) {
   };
 
   useEffect(() => {
-    obtenerCarrito(idDireccionRef.current);
+    if (cargaInicial) obtenerCarrito(idDireccionRef.current);
   }, []);
 
   return {

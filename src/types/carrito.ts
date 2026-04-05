@@ -5,7 +5,9 @@ export interface Carrito {
 
 export interface Producto {
   id: number;
+  imagen_url: string;
   nombre: string;
+  descripcion: string;
   marca: string;
   stock: number;
   cantidad: number;
