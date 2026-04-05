@@ -3,6 +3,7 @@ import ModalEliminar from "@/components/modales/ModalEliminar";
 import ModalMetodoDePago from "@/components/modales/ModalMetodoDePago";
 import Paginacion from "@/components/Paginacion";
 import SeguirViendo from "@/components/SeguirViendo";
+import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
@@ -279,6 +280,12 @@ export default function MiCarrito() {
                   </span>
                 </div>
               </div>
+            </div>
+
+            <div className="mt-4 w-full">
+              <Button variant="pink" className="w-full text-xl py-5 rounded-xl">
+                Realizar pedido
+              </Button>
             </div>
           </div>
         </section>
