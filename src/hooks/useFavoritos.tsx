@@ -10,7 +10,10 @@ export default function useFavoritos() {
     const [cargandoProductosFavoritos, setCargando] = useState(true);
 
     const obtenerFavoritos = async () => {
-        if (!usuario) return;
+        if (!usuario) {
+            setCargando(false);
+            return;
+        }
 
         setCargando(true);
 
@@ -21,7 +24,21 @@ export default function useFavoritos() {
 
         setCargando(false);
     };
+    const eliminarFavorito = async (idProducto: number) => {
+        if (!usuario) {
+            setCargando(false);
+            return;
+        }
 
+        const respuesta = await apiFavoritos.eliminarFavorito(
+            usuario.id,
+            idProducto,
+            true
+        );
+
+        if (respuesta) return;
+        await obtenerFavoritos();
+    };
     useEffect(() => {
         obtenerFavoritos();
     }, [usuario]);
@@ -30,5 +47,6 @@ export default function useFavoritos() {
         productosFavoritos,
         cargandoProductosFavoritos,
         obtenerFavoritos,
+        eliminarFavorito,
     };
 }
