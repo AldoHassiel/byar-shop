@@ -23,12 +23,14 @@ import {
   ComboboxList,
 } from "../ui/combobox";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface Props {
   accion: (datos: Direccion) => Promise<void>;
   editar?: boolean;
   direccion?: Direccion;
   obtenerInfoCP: (cp: string | number) => Promise<InfoCP | undefined>;
+  className?: string;
 }
 
 export default function ModalDirecciones({
@@ -36,6 +38,7 @@ export default function ModalDirecciones({
   editar,
   direccion,
   obtenerInfoCP,
+  className,
 }: Props) {
   const [abierto, setAbierto] = useState(false);
   const [cargando, setCargando] = useState(false);
@@ -163,9 +166,9 @@ export default function ModalDirecciones({
             className="text-byar cursor-pointer hover:opacity-70 transition-opacity"
           />
         ) : (
-          <Button variant="pink" className="p-4">
+          <Button variant="pink" className={cn("p-4", className)}>
             <Plus />
-            Añadir dirección
+            Agregar dirección
           </Button>
         )}
       </DialogTrigger>
