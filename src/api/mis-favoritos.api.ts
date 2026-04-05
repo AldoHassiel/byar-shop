@@ -53,7 +53,30 @@ const eliminarFavorito = async (idUsuario: number, idProducto: number, mostrarNo
 };
 
 
+const agregarFavorito = async (idUsuario: number, idProducto: number, mostrarNotificacion?: true) => {
+    try {
+        const respuestaHttp = await api.post(`/usuarios/${idUsuario}/mis-favoritos/agregar/producto/${idProducto}`);
+
+        const respuestaAPI = respuestaHttp.data;
+        if (!respuestaAPI.estado) {
+            toast.error(respuestaAPI.mensaje, { position: "bottom-right" });
+            return null;
+        }
+
+        if (respuestaAPI.estado && mostrarNotificacion) {
+            toast.success(respuestaAPI.mensaje, { position: "bottom-right" });
+        }
+
+        return respuestaAPI.datos;
+    } catch (error) {
+        console.error(error);
+        toast.error("No se pudo hacer la petición", { position: "bottom-right" });
+        return null;
+    }
+};
+
 export const apiFavoritos = {
     obtenerFavoritos,
     eliminarFavorito,
+    agregarFavorito,
 };

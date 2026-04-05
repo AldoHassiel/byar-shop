@@ -39,6 +39,23 @@ export default function useFavoritos() {
         if (respuesta) return;
         await obtenerFavoritos();
     };
+
+    const agregarFavorito = async (idProducto: number) => {
+        if (!usuario) {
+            setCargando(false);
+            return;
+        }
+
+        const respuesta = await apiFavoritos.agregarFavorito(
+            usuario.id,
+            idProducto,
+            true
+        );
+
+        if (respuesta) return;
+    };
+
+
     useEffect(() => {
         obtenerFavoritos();
     }, [usuario]);
@@ -48,5 +65,6 @@ export default function useFavoritos() {
         cargandoProductosFavoritos,
         obtenerFavoritos,
         eliminarFavorito,
+        agregarFavorito,
     };
 }
