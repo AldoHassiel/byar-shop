@@ -4,13 +4,16 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router";
 import { ProveedorAutenticacion } from "./global/AuthContexto.tsx";
 import { ProveedorNegocio } from "./global/NegocioContexto.tsx";
+import { ProveedorCarrito } from "./global/CarritoContexto.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <ProveedorAutenticacion>
     <ProveedorNegocio>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ProveedorCarrito>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ProveedorCarrito>
     </ProveedorNegocio>
   </ProveedorAutenticacion>,
 );
