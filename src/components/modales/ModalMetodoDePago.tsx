@@ -14,12 +14,14 @@ import { Field, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { detectarMarcaTarjeta } from "@/lib/marcasTarjetas";
+import { cn } from "@/lib/utils";
 
 interface Props {
   accion: (datos: Tarjeta) => Promise<void>;
+  className?: string;
 }
 
-export default function ModalMetodoDePago({ accion }: Props) {
+export default function ModalMetodoDePago({ accion, className }: Props) {
   const [abierto, setAbierto] = useState(false);
   const [cargando, setCargando] = useState(false);
 
@@ -121,7 +123,7 @@ export default function ModalMetodoDePago({ accion }: Props) {
   return (
     <Dialog open={abierto} onOpenChange={setAbierto}>
       <DialogTrigger asChild>
-        <Button variant="pink" className="p-4">
+        <Button variant="pink" className={cn("p-4", className)}>
           <Plus />
           Agregar método de pago
         </Button>

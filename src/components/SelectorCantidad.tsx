@@ -29,13 +29,26 @@ export default function SelectorCantidad({
   return (
     <div className="space-y-3 text-center">
       <div>
-        <p className="text-sm font-semibold mb-2">Cantidad</p>
+        {/*<p className="text-sm font-semibold mb-2">Cantidad</p>*/}
         <ButtonGroup className="w-full">
-          <Button variant="outlineShadcn" size="icon" onClick={decrementarCantidad}>
+          <Button
+            variant="outlineShadcn"
+            size="icon"
+            onClick={decrementarCantidad}
+          >
             <MinusIcon />
           </Button>
-          <Input type="number" value={cantidad} readOnly className="text-center" />
-          <Button variant="outlineShadcn" size="icon" onClick={incrementarCantidad}>
+          <Input
+            type="number"
+            value={cantidad}
+            readOnly
+            className="text-center"
+          />
+          <Button
+            variant="outlineShadcn"
+            size="icon"
+            onClick={incrementarCantidad}
+          >
             <PlusIcon />
           </Button>
         </ButtonGroup>

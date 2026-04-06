@@ -1,23 +1,32 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import TarjetaProducto from "./TarjetaProducto";
 import { apiProductos } from "@/api/productos.api";
 import type { Producto } from "@/types/productos";
 
 interface SeguirViendoProps {
   idCategorias: number[];
-  productoExcluir?: number;
+  productosExcluir?: number | number[];
   titulo?: string;
   limite?: number;
 }
 
-export default function SeguirViendo({
+function SeguirViendo({
   idCategorias,
-  productoExcluir,
+  productosExcluir,
   titulo = "Seguir viendo",
   limite = 5,
 }: SeguirViendoProps) {
-  const [productosRecomendados, setProductosRecomendados] = useState<Producto[]>([]);
+  const [productosRecomendados, setProductosRecomendados] = useState<
+    Producto[]
+  >([]);
   const [cargando, setCargando] = useState(true);
+
+  const idsExcluir = useMemo(() => {
+    if (!productosExcluir) return new Set<number>();
+    return new Set(
+      Array.isArray(productosExcluir) ? productosExcluir : [productosExcluir],
+    );
+  }, [productosExcluir]);
 
   useEffect(() => {
     const obtenerProductosPorCategorias = async () => {
@@ -25,12 +34,10 @@ export default function SeguirViendo({
         setCargando(false);
         return;
       }
-
       setCargando(true);
       try {
         const todosLosProductos: Producto[] = [];
 
-        // Obtener productos de cada categoría
         for (const idCategoria of idCategorias) {
           const datos = await apiProductos.obtenerTodos(
             undefined,
@@ -41,21 +48,17 @@ export default function SeguirViendo({
             idCategoria,
             undefined,
             1,
-            10
+            10,
           );
-
-          if (datos) {
-            todosLosProductos.push(...datos.productos);
-          }
+          if (datos) todosLosProductos.push(...datos.productos);
         }
 
-        // Filtrar productos (excluir el producto actual si aplica, y quitar duplicados)
         const productosFinales = Array.from(
           new Map(
             todosLosProductos
-              .filter((p) => !productoExcluir || p.id !== productoExcluir)
-              .map((item) => [item.id, item])
-          ).values()
+              .filter((p) => !idsExcluir.has(p.id))
+              .map((item) => [item.id, item]),
+          ).values(),
         ).slice(0, limite);
 
         setProductosRecomendados(productosFinales);
@@ -67,7 +70,7 @@ export default function SeguirViendo({
     };
 
     obtenerProductosPorCategorias();
-  }, [idCategorias, productoExcluir, limite]);
+  }, [idCategorias.join(","), idsExcluir, limite]);
 
   if (cargando) {
     return <div className="text-center py-8">Cargando recomendaciones...</div>;
@@ -78,7 +81,9 @@ export default function SeguirViendo({
       <h2 className="text-2xl text-gray-500 px-45">{titulo}</h2>
       <div className="mt-5 flex gap-5 justify-center overflow-x-auto flex-wrap">
         {productosRecomendados.length > 0 ? (
-          productosRecomendados.map((prod) => <TarjetaProducto key={prod.id} producto={prod} />)
+          productosRecomendados.map((prod) => (
+            <TarjetaProducto key={prod.id} producto={prod} />
+          ))
         ) : (
           <p className="text-gray-500">No hay productos disponibles</p>
         )}
@@ -86,3 +91,5 @@ export default function SeguirViendo({
     </section>
   );
 }
+
+export default memo(SeguirViendo);
