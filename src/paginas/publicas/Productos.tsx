@@ -17,11 +17,12 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router";
 import Corazon from "@/components/Corazon";
 import Paginacion from "@/components/Paginacion";
+import useFavoritos from "@/hooks/useFavoritos";
 const limite = 10;
 
 export default function Productos() {
   const [searchParams] = useSearchParams();
-  const { productos, cargando,totalPaginas, obtenerTodos } = useProductos();
+  const { productos, cargando, totalPaginas, obtenerTodos, setProductos } = useProductos();
 
   const { categorias } = useCategorias();
   const { subCategorias } = useSubcategorias();
@@ -34,6 +35,33 @@ export default function Productos() {
   const [idSubcategoria, setIdSubcategoria] = useState<number | undefined>();
   const [precioSeleccionado, setPrecioSeleccionado] = useState("all");
   const [paginaActual, setPaginaActual] = useState(1);
+
+  const { agregarFavorito, eliminarFavorito } = useFavoritos();
+
+  const manejarFavorito = async (producto: any) => {
+    const id = producto.id;
+    const valorActual = producto.es_favorito;
+
+    setProductos((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, es_favorito: !valorActual } : p
+      )
+    );
+
+    try {
+      if (valorActual) {
+        await eliminarFavorito(id);
+      } else {
+        await agregarFavorito(id);
+      }
+    } catch (error) {
+      setProductos((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, es_favorito: valorActual } : p
+        )
+      );
+    }
+  };
 
   const rangosPrecios = [
     { label: "Menos de $100", min: 1, max: 100 },
@@ -248,7 +276,10 @@ export default function Productos() {
               <Button variant="pink" className="flex-1">
                 Agregar al carrito
               </Button>
-              <Corazon es_favorito={producto.es_favorito} />
+              <Corazon
+                es_favorito={producto.es_favorito}
+                onToggle={() => manejarFavorito(producto)}
+              />
             </CardFooter>
           </Card>
         ))}
