@@ -1,16 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { Button } from "./ui/button";
-import coragris from "../assets/corazongris.svg";
-import corarosa from "../assets/corazonrosa.svg";
+import { useEffect } from "react";
 import type { Producto } from "@/types/productos";
+import useFavoritos from "@/hooks/useFavoritos";
+import useProductos from "@/hooks/useProductos";
+import Corazon from "./Corazon";
 
 interface TarjetaProductoProps {
   producto?: Producto;
 }
 
 export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
-  const [esFavorito, setEsFavorito] = useState(false);
+  const { agregarFavorito, eliminarFavorito } = useFavoritos();
+
+  const { setProductos } = useProductos();
+
+  const [favoritoLocal, setFavoritoLocal] = useState(
+    producto?.es_favorito ?? false
+  );
+  useEffect(() => {
+    setFavoritoLocal(producto?.es_favorito ?? false);
+  }, [producto?.es_favorito]);
 
   // Si no viene producto, mostrar un placeholder
   if (!producto) {
@@ -28,6 +39,41 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
       </article>
     );
   }
+
+
+  const manejarFavorito = async () => {
+    const valorActual = favoritoLocal;
+
+    setFavoritoLocal(!valorActual);
+
+    if (setProductos) {
+      setProductos((prev) =>
+        prev.map((p) =>
+          p.id === producto.id
+            ? { ...p, es_favorito: !valorActual }
+            : p
+        )
+      );
+    }
+
+    try {
+      if (valorActual) {
+        await eliminarFavorito(producto.id);
+      } else {
+        await agregarFavorito(producto.id);
+      }
+    } catch (error) {
+      if (setProductos) {
+        setProductos((prev) =>
+          prev.map((p) =>
+            p.id === producto.id
+              ? { ...p, es_favorito: valorActual }
+              : p
+          )
+        );
+      }
+    }
+  };
 
   return (
     <article className="bg-white rounded p-5 w-50 flex flex-col min-h-96">
@@ -54,18 +100,10 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
 
       <footer className="mt-auto flex justify-center gap-x-2">
         <Button className="rounded-2xl py-4 flex-1">Agregar al carrito</Button>
-        <Button
-          variant="outlineShadcn"
-          className="rounded-2xl py-4"
-          onClick={() => setEsFavorito((valorActual) => !valorActual)}
-        >
-          <img
-            src={esFavorito ? corarosa : coragris}
-            width={20}
-            height={20}
-            alt={esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
-          />
-        </Button>
+        <Corazon
+          es_favorito={favoritoLocal}
+          onToggle={() => manejarFavorito()}
+        />
       </footer>
     </article>
   );
