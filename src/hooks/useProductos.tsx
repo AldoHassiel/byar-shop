@@ -154,5 +154,6 @@ export default function useProductos(
     crearProducto,
     editarProducto,
     eliminarProducto,
+    setProductos
   };
 }
