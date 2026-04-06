@@ -15,8 +15,6 @@ export default function useFavoritos() {
             return;
         }
 
-        setCargando(true);
-
         const datos = await apiFavoritos.obtenerFavoritos(usuario.id);
         if (datos) {
             setProductosFavoritos(datos);
