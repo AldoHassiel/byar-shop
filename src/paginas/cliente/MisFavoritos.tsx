@@ -47,14 +47,13 @@ export default function MisFavoritos() {
           <Spinner className="size-8 text-byar" />
         </div>
       )}
-
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {productosPaginados.map((producto) => (
           <Card className="bg-fondogris" key={producto.id}>
 
-            <CardContent className="flex items-center gap-10 p-4 w-full">
-              <Link to={`/productos/${producto.id}`}>
-                <div className="flex items-center gap-10 flex-1 min-w-0 hover:scale-98">
+            <CardContent className="flex items-center p-4 w-full">
+              <Link to={`/productos/${producto.id}`} className="flex-1">
+                <div className="flex items-center gap-10 w-full hover:scale-98">
                   <img
                     src={producto.imagen_url ?? undefined}
                     alt={producto.nombre}
@@ -73,7 +72,7 @@ export default function MisFavoritos() {
                   </div>
                 </div>
               </Link>
-              <div className="flex-shrink-0">
+              <div className="flex justify-end lg:justify-end flex-shrink-0">
                 <ModalEliminar
                   titulo="Eliminar favorito"
                   descripcion={`¿Seguro que deseas eliminar el producto ${producto.nombre}?`}
@@ -88,6 +87,7 @@ export default function MisFavoritos() {
 
         ))}
       </div>
+
 
       <div className="mt-6 flex justify-center">
         <Paginacion
