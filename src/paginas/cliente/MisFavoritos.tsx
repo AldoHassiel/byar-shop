@@ -53,23 +53,24 @@ export default function MisFavoritos() {
           <Card className="bg-fondogris" key={producto.id}>
 
             <CardContent className="flex items-center gap-10 p-4 w-full">
-              <Link to={`/productos/${producto.id}`}
-                className="flex items-center gap-10 flex-1 min-w-0">
-                <img
-                  src={producto.imagen_url ?? undefined}
-                  alt={producto.nombre}
-                  className="h-35 w-35 object-contain"
-                />
+              <Link to={`/productos/${producto.id}`}>
+                <div className="flex items-center gap-10 flex-1 min-w-0 hover:scale-98">
+                  <img
+                    src={producto.imagen_url ?? undefined}
+                    alt={producto.nombre}
+                    className="h-35 w-35 object-contain"
+                  />
 
 
-                <div className="flex-1 space-y-2">
-                  <p className="text-3xl font-semibold">
-                    {producto.nombre}
-                  </p>
-                  <p className="text-2xl text-muted-foreground">
-                    {producto.descripcion}
-                  </p>
+                  <div className="flex-1 space-y-2">
+                    <p className="text-3xl font-semibold">
+                      {producto.nombre}
+                    </p>
+                    <p className="text-2xl text-muted-foreground">
+                      {producto.descripcion}
+                    </p>
 
+                  </div>
                 </div>
               </Link>
               <div className="flex-shrink-0">
