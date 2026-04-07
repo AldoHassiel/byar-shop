@@ -45,12 +45,12 @@ export default function ModalDetalleCompra({
             <Spinner className="size-8 text-byar" />
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2 overflow-hidden">
             <div className="space-y-1">
               <span className="block text-[18px] font-medium">{`${detalleCompra?.productos.length} articulos`}</span>
-              <div className="relative">
-                <Carousel opts={{ align: "start" }}>
-                  <CarouselContent className="px-2">
+              <div className="relative px-3">
+                <Carousel opts={{ align: "center" }}>
+                  <CarouselContent className="px-1">
                     {detalleCompra?.productos.map((producto) => (
                       <CarouselItem
                         key={producto.id}
@@ -83,11 +83,11 @@ export default function ModalDetalleCompra({
 
                   <CarouselPrevious
                     variant="ghost"
-                    className="text-byar -left-5"
+                    className="text-byar -left-7 hover:bg-transparent  active:bg-transparent  shadow-none p-0 hover:text-byar"
                   />
                   <CarouselNext
                     variant="ghost"
-                    className="text-byar -right-5"
+                    className="text-byar -right-6 hover:bg-transparent  active:bg-transparent  shadow-none p-0 hover:text-byar"
                   />
                 </Carousel>
               </div>
@@ -111,7 +111,7 @@ export default function ModalDetalleCompra({
                   Dirección de envío
                 </span>
                 <div className="">
-                  <p>{`${detalleCompra?.pedido.direccion_calle} ${detalleCompra?.pedido.direccion_numero_exterior} ${detalleCompra?.pedido.direccion_numero_interior && detalleCompra?.pedido.direccion_numero_interior}, ${detalleCompra?.pedido.direccion_especificaciones}`}</p>
+                  <p>{`${detalleCompra?.pedido.direccion_calle} ${detalleCompra?.pedido.direccion_numero_exterior} ${detalleCompra?.pedido.direccion_numero_interior && detalleCompra?.pedido.direccion_numero_interior}, ${detalleCompra?.pedido.direccion_especificaciones || "Sin especificaciones"}`}</p>
                   <p>{`${detalleCompra?.pedido.direccion_colonia}, ${detalleCompra?.pedido.direccion_codigo_postal} ${detalleCompra?.pedido.direccion_municipio}, ${detalleCompra?.pedido.direccion_estado} `}</p>
                 </div>
               </div>
