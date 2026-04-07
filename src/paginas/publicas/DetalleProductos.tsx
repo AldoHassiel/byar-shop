@@ -4,11 +4,14 @@ import SelectorCantidad from "@/components/SelectorCantidad";
 import useProductos from "@/hooks/useProductos";
 import { useParams } from "react-router";
 import { useState } from "react";
+import useCarrito from "@/global/CarritoContexto";
 
 export default function DetalleProductos() {
   const { id } = useParams();
   const { producto, cargandoDetalle } = useProductos(Number(id));
   const [cantidad, setCantidad] = useState(1);
+
+  const { agregarAlCarrito } = useCarrito();
 
   if (cargandoDetalle) return <p className="mt-20 p-6">Cargando...</p>;
 
@@ -49,13 +52,19 @@ export default function DetalleProductos() {
             </div>
 
             <div className="space-y-3 text-center">
-              <SelectorCantidad
-                cantidad={cantidad}
-                setCantidad={setCantidad}
-                stock={producto?.stock || 0}
-              />
+              <div>
+                <p className="text-sm font-semibold mb-2">Cantidad</p>
+                <SelectorCantidad
+                  cantidad={cantidad}
+                  setCantidad={setCantidad}
+                  stock={producto?.stock || 0}
+                />
+              </div>
 
-              <Button className="w-full p-6 text-lg font-semibold">
+              <Button
+                className="w-full p-6 text-lg font-semibold"
+                onClick={() => agregarAlCarrito(producto?.id ?? 0, cantidad)}
+              >
                 Agregar al carrito
               </Button>
             </div>
@@ -66,7 +75,7 @@ export default function DetalleProductos() {
       <section className="mt-10">
         <SeguirViendo
           idCategorias={producto?.id_categoria ? [producto.id_categoria] : []}
-          productoExcluir={Number(id)}
+          productosExcluir={Number(id)}
           titulo="Seguir viendo"
           limite={5}
         />
