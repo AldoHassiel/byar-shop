@@ -94,12 +94,13 @@ const editarDatosGenerales = async (
 const editarCorreo = async (
   idUsuario: number,
   correo: string,
+  pwdActual: string,
   mostrarNotificacion: boolean = false,
 ) => {
   try {
     const respuestaHttp = await api.patch<ApiRespuesta<null>>(
       `/usuario/${idUsuario}/misDatos/correo`,
-      { correo },
+      { correo, pwd_actual: pwdActual },
     );
 
     const respuestaAPI = respuestaHttp.data;
@@ -136,12 +137,13 @@ const editarCorreo = async (
 const editarPwd = async (
   idUsuario: number,
   pwd: string,
+  pwdActual: string,
   mostrarNotificacion: boolean = false,
 ) => {
   try {
     const respuestaHttp = await api.patch<ApiRespuesta<null>>(
       `/usuario/${idUsuario}/misDatos/pwd`,
-      { pwd },
+      { pwd_actual: pwdActual, pwd_nuevo: pwd },
     );
 
     const respuestaAPI = respuestaHttp.data;
