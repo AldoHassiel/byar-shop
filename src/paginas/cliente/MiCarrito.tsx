@@ -23,34 +23,20 @@ import { Spinner } from "@/components/ui/spinner";
 import useCarrito from "@/global/CarritoContexto";
 import useDirecciones from "@/hooks/useDirecciones";
 import useMetodosDePago from "@/hooks/useMetodosDePago";
+import { iconosMarcas } from "@/lib/iconos";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { PaymentIcon } from "react-svg-credit-card-payment-icons";
-
-const iconosMarcas: Record<string, React.ReactNode> = {
-  Visa: <PaymentIcon type="Visa" format="flatRounded" width={48} />,
-  Mastercard: <PaymentIcon type="Mastercard" format="flatRounded" width={48} />,
-  "American Express": (
-    <PaymentIcon type="Amex" format="flatRounded" width={48} />
-  ),
-  Discover: <PaymentIcon type="Discover" format="flatRounded" width={48} />,
-  "Diners Club": <PaymentIcon type="Diners" format="flatRounded" width={48} />,
-  JCB: <PaymentIcon type="Jcb" format="flatRounded" width={48} />,
-  UnionPay: <PaymentIcon type="Unionpay" format="flatRounded" width={48} />,
-  Maestro: <PaymentIcon type="Maestro" format="flatRounded" width={48} />,
-  Elo: <PaymentIcon type="Elo" format="flatRounded" width={48} />,
-  Hipercard: <PaymentIcon type="Hipercard" format="flatRounded" width={48} />,
-  Mir: <PaymentIcon type="Mir" format="flatRounded" width={48} />,
-  Desconocida: <PaymentIcon type="Generic" format="flatRounded" width={48} />,
-};
+import { Link } from "react-router";
 
 export default function MiCarrito() {
   const {
     carrito,
     cargando,
+    realizandoCompra,
     obtenerCarrito,
     actualizarCantidad,
     eliminarProducto,
+    realizarCompra,
   } = useCarrito();
 
   const [direccionSel, setDireccionSel] = useState("");
@@ -60,6 +46,7 @@ export default function MiCarrito() {
   const { tarjetas, crearTarjeta } = useMetodosDePago();
 
   const categoriasCarritoRef = useRef<number[]>([]);
+  const direccionesCargadasRef = useRef(false);
 
   const categoriasCarrito = useMemo(() => {
     const nuevas = [...new Set(carrito?.productos.map((p) => p.id_categoria))];
@@ -74,6 +61,11 @@ export default function MiCarrito() {
 
     return categoriasCarritoRef.current;
   }, [carrito]);
+
+  const idsProductosCarrito = useMemo(
+    () => carrito?.productos.map((p) => p.id) ?? [],
+    [carrito?.productos.map((p) => p.id).join(",")],
+  );
 
   const [paginaActual, setPaginaActual] = useState(1);
   const PRODUCTOS_POR_PAGINA = 5;
@@ -94,24 +86,41 @@ export default function MiCarrito() {
   }, [carrito?.productos.length]);
 
   useEffect(() => {
-    obtenerCarrito(Number(direccionSel));
+    if (!direccionesCargadasRef.current) return;
+    obtenerCarrito(Number(direccionSel) || undefined);
   }, [direccionSel]);
 
   useEffect(() => {
+    if (direcciones.length === 0 && tarjetas.length === 0) return;
+
+    direccionesCargadasRef.current = true;
+
     const direccionPredeterminada = direcciones.find(
       (d) => d.es_predeterminada,
     );
-    if (direccionPredeterminada)
-      setDireccionSel(String(direccionPredeterminada.id));
-
     const tarjetaPredeterminada = tarjetas.find((t) => t.es_predeterminada);
+
+    if (direccionPredeterminada) {
+      setDireccionSel(String(direccionPredeterminada.id));
+    } else {
+      obtenerCarrito(undefined);
+    }
+
     if (tarjetaPredeterminada) setTarjetaSel(String(tarjetaPredeterminada.id));
   }, [direcciones, tarjetas]);
 
-  if (cargando)
+  if (cargando && !carrito)
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spinner className="size-8 text-byar" />
+      </div>
+    );
+
+  if (!carrito || carrito.productos.length === 0)
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen gap-4">
+        <h2 className="text-3xl">Tu carrito está vacío</h2>
+        <p className="text-gray-500">¡Agrega productos para continuar!</p>
       </div>
     );
 
@@ -125,9 +134,9 @@ export default function MiCarrito() {
         <section className="grid grid-cols-12 items-start w-full gap-15">
           <div className="col-span-8 bg-white rounded-4xl px-5">
             {productosPaginados?.map((p, indice) => (
-              <>
-                <article className="flex gap-x-5 mb-1 p-5">
-                  <div>
+              <Link to={`/productos/${p.id}`}>
+                <article className="flex gap-x-6 mb-1 p-5 hover:scale-98">
+                  <div className="flex justify-center items-center ">
                     <img
                       src={p.imagen_url}
                       alt="Imagen del producto"
@@ -147,7 +156,13 @@ export default function MiCarrito() {
                         <span>Stock:</span>
                         <span>{p.stock}</span>
                       </div>
-                      <div className="flex items-center gap-x-5 w-[25%]">
+                      <div
+                        className="flex items-center gap-x-5 w-[25%]"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                      >
                         <InputGroup>
                           <InputGroupAddon>
                             <InputGroupButton
@@ -191,7 +206,7 @@ export default function MiCarrito() {
                 {indice < productosPaginados.length - 1 && (
                   <Separator className="bg-gray-500" />
                 )}
-              </>
+              </Link>
             ))}
             <Paginacion
               paginaActual={paginaActual}
@@ -207,17 +222,23 @@ export default function MiCarrito() {
                 <span className="block">Selecciona tu dirección</span>
                 <Select value={direccionSel} onValueChange={setDireccionSel}>
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue placeholder="Sin dirección" />
                   </SelectTrigger>
                   <SelectContent position="popper">
                     <SelectGroup>
-                      {direcciones.map((dir) => (
-                        <SelectItem key={dir.id} value={String(dir.id)}>
-                          {dir.calle} {dir.numero_exterior}
-                          {dir.numero_interior &&
-                            ` Int. ${dir.numero_interior}`}
+                      {direcciones.length === 0 ? (
+                        <SelectItem value="empty" disabled>
+                          Sin direcciones registradas
                         </SelectItem>
-                      ))}
+                      ) : (
+                        direcciones.map((dir) => (
+                          <SelectItem key={dir.id} value={String(dir.id)}>
+                            {dir.calle} {dir.numero_exterior}
+                            {dir.numero_interior &&
+                              ` Int. ${dir.numero_interior}`}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -234,16 +255,22 @@ export default function MiCarrito() {
                 <span className="block">Selecciona el método</span>
                 <Select value={tarjetaSel} onValueChange={setTarjetaSel}>
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    <SelectValue placeholder="Sin método de pago" />
                   </SelectTrigger>
                   <SelectContent position="popper">
                     <SelectGroup>
-                      {tarjetas.map((t) => (
-                        <SelectItem key={t.id} value={String(t.id)}>
-                          {iconosMarcas[t.marca]}
-                          {`**** ${t.ultimos_digitos}`}
+                      {tarjetas.length === 0 ? (
+                        <SelectItem value="empty" disabled>
+                          Sin métodos de pago registrados
                         </SelectItem>
-                      ))}
+                      ) : (
+                        tarjetas.map((t) => (
+                          <SelectItem key={t.id} value={String(t.id)}>
+                            {iconosMarcas[t.marca]}
+                            {`**** ${t.ultimos_digitos}`}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -283,8 +310,20 @@ export default function MiCarrito() {
             </div>
 
             <div className="mt-4 w-full">
-              <Button variant="pink" className="w-full text-xl py-5 rounded-xl">
-                Realizar pedido
+              <Button
+                variant="pink"
+                className="w-full text-xl py-5 rounded-xl"
+                onClick={() =>
+                  realizarCompra(Number(direccionSel), Number(tarjetaSel))
+                }
+                disabled={
+                  realizandoCompra ||
+                  direcciones.length == 0 ||
+                  tarjetas.length == 0
+                }
+              >
+                {realizandoCompra && <Spinner />}
+                {realizandoCompra ? "Realizando pedido..." : "Realizar pedido"}
               </Button>
             </div>
           </div>
@@ -296,7 +335,7 @@ export default function MiCarrito() {
               idCategorias={categoriasCarrito}
               titulo="También te podría interesar..."
               limite={5}
-              productosExcluir={carrito?.productos.map((p) => p.id)}
+              productosExcluir={idsProductosCarrito}
             />
           )}
         </div>
