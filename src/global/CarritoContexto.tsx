@@ -15,6 +15,7 @@ interface CarritoContexto {
   carrito: Carrito | undefined;
   usuario: Usuario | null;
   cargando: boolean;
+  realizandoCompra: boolean;
   obtenerCarrito: (
     idDireccion?: number,
     mostrarNotificacion?: boolean,
@@ -33,6 +34,11 @@ interface CarritoContexto {
     idProducto: number,
     mostrarNotificacion?: boolean,
   ) => Promise<void>;
+  realizarCompra: (
+    idDireccion: number,
+    idTarjeta: number,
+    mostrarNotificacion?: boolean,
+  ) => Promise<void>;
 }
 
 const CarritoContexto = createContext<CarritoContexto | undefined>(undefined);
@@ -45,21 +51,33 @@ interface CarritoProviderProps {
 
 export function ProveedorCarrito({
   children,
-  cargaInicial = true,
   idDireccionInicial,
 }: CarritoProviderProps) {
   const [carrito, setCarrito] = useState<Carrito>();
   const idDireccionRef = useRef<number | undefined>(idDireccionInicial);
   const [cargando, setCargando] = useState(false);
+  const [realizandoCompra, setRealizandoCompra] = useState(false);
+
   const { usuario } = useAutenticacion();
+  const usuarioRef = useRef(usuario);
+
+  useEffect(() => {
+    usuarioRef.current = usuario;
+
+    if (!usuario?.id) {
+      setCarrito(undefined);
+      idDireccionRef.current = undefined;
+    }
+  }, [usuario?.id]);
 
   const recargarCarrito = async (
     idDireccion?: number,
     mostrarNotificacion = false,
   ) => {
-    if (!usuario?.id) return;
+    const uid = usuarioRef.current?.id;
+    if (!uid) return;
     const datos = await apiCarrito.obtenerCarrito(
-      usuario?.id,
+      uid,
       idDireccion,
       mostrarNotificacion,
     );
@@ -81,10 +99,11 @@ export function ProveedorCarrito({
     cantidad: number,
     mostrarNotificacion: boolean = true,
   ) => {
-    if (!usuario?.id) return;
+    const uid = usuarioRef.current?.id;
+    if (!uid) return;
     setCargando(true);
     await apiCarrito.agregarAlCarrito(
-      usuario?.id,
+      uid,
       idProducto,
       cantidad,
       mostrarNotificacion,
@@ -98,7 +117,8 @@ export function ProveedorCarrito({
     delta: number,
     mostrarNotificacion: boolean = false,
   ) => {
-    if (!usuario?.id) return;
+    const uid = usuarioRef.current?.id;
+    if (!uid) return;
     const carritoAnterior = carrito;
     setCarrito((prev) => {
       if (!prev) return prev;
@@ -110,7 +130,7 @@ export function ProveedorCarrito({
       };
     });
     const resultado = await apiCarrito.actualizarCantidad(
-      usuario.id,
+      uid,
       idProducto,
       delta,
       mostrarNotificacion,
@@ -126,20 +146,31 @@ export function ProveedorCarrito({
     idProducto: number,
     mostrarNotificacion: boolean = true,
   ) => {
-    if (!usuario?.id) return;
+    const uid = usuarioRef.current?.id;
+    if (!uid) return;
     setCargando(true);
-    await apiCarrito.eliminarProducto(
-      usuario?.id,
-      idProducto,
-      mostrarNotificacion,
-    );
+    await apiCarrito.eliminarProducto(uid, idProducto, mostrarNotificacion);
     await recargarCarrito(idDireccionRef.current, false);
     setCargando(false);
   };
 
-  useEffect(() => {
-    if (cargaInicial) obtenerCarrito(idDireccionRef.current);
-  }, []);
+  const realizarCompra = async (
+    idDireccion: number,
+    idTarjeta: number,
+    mostrarNotificacion: boolean = true,
+  ) => {
+    const uid = usuarioRef.current?.id;
+    if (!uid) return;
+    setRealizandoCompra(true);
+    await apiCarrito.realizarCompra(
+      uid,
+      idDireccion,
+      idTarjeta,
+      mostrarNotificacion,
+    );
+    await recargarCarrito(idDireccionRef.current, false);
+    setRealizandoCompra(false);
+  };
 
   return (
     <CarritoContexto.Provider
@@ -147,10 +178,12 @@ export function ProveedorCarrito({
         carrito,
         usuario,
         cargando,
+        realizandoCompra,
         obtenerCarrito,
         agregarAlCarrito,
         actualizarCantidad,
         eliminarProducto,
+        realizarCompra,
       }}
     >
       {children}

@@ -6,6 +6,7 @@ import type { Producto } from "@/types/productos";
 import useFavoritos from "@/hooks/useFavoritos";
 import useProductos from "@/hooks/useProductos";
 import Corazon from "./Corazon";
+import useCarrito from "@/global/CarritoContexto";
 
 interface TarjetaProductoProps {
   producto?: Producto;
@@ -14,10 +15,12 @@ interface TarjetaProductoProps {
 export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
   const { agregarFavorito, eliminarFavorito } = useFavoritos();
 
+  const { agregarAlCarrito } = useCarrito();
+
   const { setProductos } = useProductos();
 
   const [favoritoLocal, setFavoritoLocal] = useState(
-    producto?.es_favorito ?? false
+    producto?.es_favorito ?? false,
   );
   useEffect(() => {
     setFavoritoLocal(producto?.es_favorito ?? false);
@@ -40,7 +43,6 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
     );
   }
 
-
   const manejarFavorito = async () => {
     const valorActual = favoritoLocal;
 
@@ -49,10 +51,8 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
     if (setProductos) {
       setProductos((prev) =>
         prev.map((p) =>
-          p.id === producto.id
-            ? { ...p, es_favorito: !valorActual }
-            : p
-        )
+          p.id === producto.id ? { ...p, es_favorito: !valorActual } : p,
+        ),
       );
     }
 
@@ -66,10 +66,8 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
       if (setProductos) {
         setProductos((prev) =>
           prev.map((p) =>
-            p.id === producto.id
-              ? { ...p, es_favorito: valorActual }
-              : p
-          )
+            p.id === producto.id ? { ...p, es_favorito: valorActual } : p,
+          ),
         );
       }
     }
@@ -99,7 +97,12 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
       </Link>
 
       <footer className="mt-auto flex justify-center gap-x-2">
-        <Button className="rounded-2xl py-4 flex-1">Agregar al carrito</Button>
+        <Button
+          className="rounded-2xl py-4 flex-1"
+          onClick={() => agregarAlCarrito(producto.id, 1)}
+        >
+          Agregar al carrito
+        </Button>
         <Corazon
           es_favorito={favoritoLocal}
           onToggle={() => manejarFavorito()}

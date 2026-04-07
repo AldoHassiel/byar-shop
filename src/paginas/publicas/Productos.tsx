@@ -18,11 +18,13 @@ import { Link, useSearchParams } from "react-router";
 import Corazon from "@/components/Corazon";
 import Paginacion from "@/components/Paginacion";
 import useFavoritos from "@/hooks/useFavoritos";
+import useCarrito from "@/global/CarritoContexto";
 const limite = 10;
 
 export default function Productos() {
   const [searchParams] = useSearchParams();
-  const { productos, cargando, totalPaginas, obtenerTodos, setProductos } = useProductos();
+  const { productos, cargando, totalPaginas, obtenerTodos, setProductos } =
+    useProductos();
 
   const { categorias } = useCategorias();
   const { subCategorias } = useSubcategorias();
@@ -38,14 +40,14 @@ export default function Productos() {
 
   const { agregarFavorito, eliminarFavorito } = useFavoritos();
 
+  const { agregarAlCarrito } = useCarrito();
+
   const manejarFavorito = async (producto: any) => {
     const id = producto.id;
     const valorActual = producto.es_favorito;
 
     setProductos((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, es_favorito: !valorActual } : p
-      )
+      prev.map((p) => (p.id === id ? { ...p, es_favorito: !valorActual } : p)),
     );
 
     try {
@@ -56,9 +58,7 @@ export default function Productos() {
       }
     } catch (error) {
       setProductos((prev) =>
-        prev.map((p) =>
-          p.id === id ? { ...p, es_favorito: valorActual } : p
-        )
+        prev.map((p) => (p.id === id ? { ...p, es_favorito: valorActual } : p)),
       );
     }
   };
@@ -116,7 +116,15 @@ export default function Productos() {
       paginaActual,
       limite,
     );
-  }, [precioMin, precioMax, idMarca, idCategoria, idSubcategoria, paginaActual, limite]);
+  }, [
+    precioMin,
+    precioMax,
+    idMarca,
+    idCategoria,
+    idSubcategoria,
+    paginaActual,
+    limite,
+  ]);
 
   const nombreCategoriaSeleccionada = categorias.find(
     (cat) => cat.id === idCategoria,
@@ -273,7 +281,11 @@ export default function Productos() {
               </CardContent>
             </Link>
             <CardFooter className="p-4 flex items-center gap-2">
-              <Button variant="pink" className="flex-1">
+              <Button
+                variant="pink"
+                className="flex-1"
+                onClick={() => agregarAlCarrito(producto.id, 1)}
+              >
                 Agregar al carrito
               </Button>
               <Corazon
@@ -290,7 +302,6 @@ export default function Productos() {
         onCambiarPagina={setPaginaActual}
         className="mb-12"
       />
-
     </div>
   );
 }
