@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
@@ -29,7 +28,6 @@ export default function ModalPwd({ accion, className }: Props) {
   const [contrasenaActual, setContrasenaActual] = useState("");
   const [nuevaContrasena, setNuevaContrasena] = useState("");
   const [repetirContrasena, setRepetirContrasena] = useState("");
-  const [mostrarContrasenaActual, setMostrarContrasenaActual] = useState(false);
   const [bloquearAutocompletado, setBloquearAutocompletado] = useState(true);
 
   const contrasenasNoCoinciden =
@@ -41,7 +39,6 @@ export default function ModalPwd({ accion, className }: Props) {
     setContrasenaActual("");
     setNuevaContrasena("");
     setRepetirContrasena("");
-    setMostrarContrasenaActual(false);
     setBloquearAutocompletado(true);
   };
 
@@ -106,9 +103,9 @@ export default function ModalPwd({ accion, className }: Props) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-xl rounded-[2rem] p-8">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-5xl">Cambiar contraseña</DialogTitle>
+          <DialogTitle className="text-2xl">Cambiar contraseña</DialogTitle>
         </DialogHeader>
 
         <form
@@ -119,36 +116,26 @@ export default function ModalPwd({ accion, className }: Props) {
           }}
           className="space-y-4"
         >
+          {/* Fake inputs para engañar al autofill del navegador */}
+          <input type="hidden" name="username" />
+          <input type="hidden" name="password" />
+
           <Field>
             <FieldLabel className="sr-only" htmlFor="contrasenaActual">
               Contraseña actual
             </FieldLabel>
-            <div className="relative">
-              <Input
-                id="contrasenaActual"
-                type={mostrarContrasenaActual ? "text" : "password"}
-                required
-                autoComplete="off"
-                readOnly={bloquearAutocompletado}
-                placeholder="Contraseña actual"
-                className={cn(estiloInput, "pr-14")}
-                value={contrasenaActual}
-                onFocus={() => setBloquearAutocompletado(false)}
-                onChange={(e) => setContrasenaActual(e.target.value)}
-              />
-              <button
-                type="button"
-                aria-label={
-                  mostrarContrasenaActual
-                    ? "Ocultar contraseña actual"
-                    : "Mostrar contraseña actual"
-                }
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                onClick={() => setMostrarContrasenaActual((prev) => !prev)}
-              >
-                {mostrarContrasenaActual ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
+            <Input
+              id="contrasenaActual"
+              type="password"
+              required
+              autoComplete="new-password"
+              readOnly={bloquearAutocompletado}
+              placeholder="Contraseña actual"
+              className={estiloInput}
+              value={contrasenaActual}
+              onFocus={() => setBloquearAutocompletado(false)}
+              onChange={(e) => setContrasenaActual(e.target.value)}
+            />
           </Field>
 
           <Field>
@@ -160,7 +147,7 @@ export default function ModalPwd({ accion, className }: Props) {
               type="password"
               minLength={8}
               required
-              autoComplete="off"
+              autoComplete="new-password"
               readOnly={bloquearAutocompletado}
               placeholder="Nueva contraseña"
               className={estiloInput}
