@@ -5,6 +5,7 @@ import useProductos from "@/hooks/useProductos";
 import { useParams } from "react-router";
 import { useState } from "react";
 import useCarrito from "@/global/CarritoContexto";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function DetalleProductos() {
   const { id } = useParams();
@@ -13,7 +14,13 @@ export default function DetalleProductos() {
 
   const { agregarAlCarrito } = useCarrito();
 
-  if (cargandoDetalle) return <p className="mt-20 p-6">Cargando...</p>;
+  if (cargandoDetalle || !producto) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner className="size-8 text-byar" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-fondogris px-10 py-10 mt-20">
@@ -62,7 +69,7 @@ export default function DetalleProductos() {
               </div>
 
               <Button
-                className="w-full p-6 text-lg font-semibold"
+                className="w-full p-6 text-lg font-semibold hover:bg-pink-600"
                 onClick={() => agregarAlCarrito(producto?.id ?? 0, cantidad)}
               >
                 Agregar al carrito

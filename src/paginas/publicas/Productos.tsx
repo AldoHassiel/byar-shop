@@ -19,7 +19,9 @@ import Corazon from "@/components/Corazon";
 import Paginacion from "@/components/Paginacion";
 import useFavoritos from "@/hooks/useFavoritos";
 import useCarrito from "@/global/CarritoContexto";
-const limite = 10;
+import { Spinner } from "@/components/ui/spinner";
+import type { Subcategorias } from "@/types/subcategoria";
+const limite = 12;
 
 export default function Productos() {
   const [searchParams] = useSearchParams();
@@ -41,6 +43,10 @@ export default function Productos() {
   const { agregarFavorito, eliminarFavorito } = useFavoritos();
 
   const { agregarAlCarrito } = useCarrito();
+
+  const subcategoriasFiltradas: Subcategorias[] = idCategoria
+    ? subCategorias.filter((sub) => sub.id_categoria === idCategoria)
+    : subCategorias;
 
   const manejarFavorito = async (producto: any) => {
     const id = producto.id;
@@ -132,7 +138,13 @@ export default function Productos() {
 
   const titulo = nombreCategoriaSeleccionada || "Productos";
 
-  if (cargando) return <p className="p-6 mt-20">Cargando...</p>;
+  if (cargando || !productos) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner className="size-8 text-byar" />
+      </div>
+    );
+  }
 
   return (
     <div className="mt-20">
@@ -202,9 +214,10 @@ export default function Productos() {
           {/* CATEGORÍAS */}
           <Select
             value={idCategoria ? String(idCategoria) : "all"}
-            onValueChange={(value) =>
-              setIdCategoria(value === "all" ? undefined : Number(value))
-            }
+            onValueChange={(value) => {
+              setIdCategoria(value === "all" ? undefined : Number(value));
+              setIdSubcategoria(undefined);
+            }}
           >
             <SelectTrigger className="w-40 rounded-full bg-gray-100 border-none">
               <SelectValue placeholder="Categoría" />
@@ -238,7 +251,7 @@ export default function Productos() {
               <SelectGroup>
                 <SelectItem value="all">Subcategorías</SelectItem>
 
-                {subCategorias.map((subCat) => (
+                {subcategoriasFiltradas.map((subCat) => (
                   <SelectItem key={subCat.id} value={String(subCat.id)}>
                     {subCat.nombre}
                   </SelectItem>

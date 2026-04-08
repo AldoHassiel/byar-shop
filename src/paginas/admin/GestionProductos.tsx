@@ -1,5 +1,6 @@
 import ModalEliminar from "@/components/modales/ModalEliminar";
 import ModalProducto from "@/components/modales/ModalProducto";
+import ModuloVacio from "@/components/ModuloVacio";
 import Paginacion from "@/components/Paginacion";
 import { Spinner } from "@/components/ui/spinner";
 import useCategorias from "@/hooks/useCategorias";
@@ -51,6 +52,10 @@ export default function GestionProductos() {
           marcas={marcas}
         />
       </div>
+
+      {productos.length === 0 && !cargando && (
+        <ModuloVacio modulo="productos" />
+      )}
 
       {cargando ? (
         <div className="flex justify-center items-center h-full">

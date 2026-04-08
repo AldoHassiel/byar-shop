@@ -13,6 +13,7 @@ import { CreditCard } from "lucide-react";
 import { Rocket } from "lucide-react";
 import { useOutletContext } from "react-router";
 import byarhero from "@/assets/Fotoinicio/ByarPLa.png";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Inicio() {
   const { negocio, cargando } = useOutletContext<{
@@ -24,7 +25,13 @@ export default function Inicio() {
     limiteInicial: 8,
   });
 
-  if (cargando) return <p className="mt-20 p-6">Cargando...</p>;
+  if (cargando || !negocio || !productos || cargandoProductos) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Spinner className="size-8 text-byar" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -41,7 +48,7 @@ export default function Inicio() {
           <Carousel opts={{ align: "start" }} className="w-full max-w-6xl">
             <CarouselPrevious
               variant="ghost"
-              className="text-byar h-20 w-20 -right-8 md:-left-20 hover:bg-transparent  active:bg-transparent  shadow-none p-0  [&_svg]:size-20! "
+              className="text-byar  h-20 w-20 -right-8 md:-left-20 hover:bg-transparent  active:bg-transparent  shadow-none p-0 hover:text-byarclaro [&_svg]:size-20!"
             />
             <CarouselContent>
               {cargandoProductos
@@ -64,7 +71,7 @@ export default function Inicio() {
             </CarouselContent>
             <CarouselNext
               variant="ghost"
-              className="text-byar h-20 w-20 -right-8 md:-right-20 hover:bg-transparent  active:bg-transparent  shadow-none p-0  [&_svg]:size-20! "
+              className="text-byar h-20 w-20 -right-8  md:-right-20 hover:bg-transparent  active:bg-transparent  shadow-none p-0 hover:text-byarclaro [&_svg]:size-20!"
             />
           </Carousel>
         </div>

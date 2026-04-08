@@ -1,5 +1,6 @@
 import ModalEliminar from "@/components/modales/ModalEliminar";
 import ModalMetodoDePago from "@/components/modales/ModalMetodoDePago";
+import ModuloVacio from "@/components/ModuloVacio";
 import { Spinner } from "@/components/ui/spinner";
 import useMetodosDePago from "@/hooks/useMetodosDePago";
 import { CircleSmallIcon } from "lucide-react";
@@ -38,46 +39,50 @@ export default function MisMetodosDePago() {
         <ModalMetodoDePago accion={crearTarjeta} />
       </div>
 
-      {cargando ? (
+      {(cargando || !tarjetas) && (
         <div className="flex justify-center items-center h-full">
           <Spinner className="size-8 text-byar" />
         </div>
-      ) : (
-        <div className="space-y-4 mt-5">
-          {tarjetas?.map((t) => (
-            <article className="bg-fondogris rounded-2xl w-full grid grid-cols-12 justify-between items-center px-4 py-3 gap-4">
-              <div className="col-span-8 flex items-center gap-4">
-                <div>{iconosMarcas[t.marca]}</div>
-                <div>
-                  <span className="block">{t.nombre_titular}</span>
-                  <span className="block">{`**** ${t.ultimos_digitos}`}</span>
-                </div>
-              </div>
-              <div className="col-span-2">
-                {t.es_predeterminada ? (
-                  <span className="block text-center text-gray-600">
-                    Predeterminada
-                  </span>
-                ) : (
-                  <div className="flex justify-center">
-                    <CircleSmallIcon
-                      className="cursor-pointer"
-                      onClick={() => establecerPredeterminada(t.id)}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="col-span-2 flex gap-4 justify-center items-center">
-                <ModalEliminar
-                  titulo="Eliminar método de pago"
-                  descripcion="¿Estas seguro que deseas eliminar este método de pago?"
-                  accion={() => eliminarTarjeta(t.id)}
-                />
-              </div>
-            </article>
-          ))}
-        </div>
       )}
+
+      {tarjetas.length === 0 && !cargando && (
+        <ModuloVacio modulo="métodos de pagos" />
+      )}
+
+      <div className="space-y-4 mt-5">
+        {tarjetas?.map((t) => (
+          <article className="bg-fondogris rounded-2xl w-full grid grid-cols-12 justify-between items-center px-4 py-3 gap-4">
+            <div className="col-span-8 flex items-center gap-4">
+              <div>{iconosMarcas[t.marca]}</div>
+              <div>
+                <span className="block">{t.nombre_titular}</span>
+                <span className="block">{`**** ${t.ultimos_digitos}`}</span>
+              </div>
+            </div>
+            <div className="col-span-2">
+              {t.es_predeterminada ? (
+                <span className="block text-center text-gray-600">
+                  Predeterminada
+                </span>
+              ) : (
+                <div className="flex justify-center">
+                  <CircleSmallIcon
+                    className="cursor-pointer"
+                    onClick={() => establecerPredeterminada(t.id)}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="col-span-2 flex gap-4 justify-center items-center">
+              <ModalEliminar
+                titulo="Eliminar método de pago"
+                descripcion="¿Estas seguro que deseas eliminar este método de pago?"
+                accion={() => eliminarTarjeta(t.id)}
+              />
+            </div>
+          </article>
+        ))}
+      </div>
     </>
   );
 }
