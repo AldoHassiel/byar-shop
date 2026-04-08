@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Field, FieldLabel } from "../ui/field";
+import { Field, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 
@@ -86,7 +86,9 @@ export default function ModalPwd({ accion, className }: Props) {
   };
 
   const estiloInput =
-    "h-14 rounded-full border-gray-500/70 px-5 text-xl placeholder:text-gray-400";
+    "bg-gray-100/70 border-gray-300 text-gray-800 placeholder:text-gray-500";
+
+  const estiloLabel = "text-gray-700";
 
   return (
     <Dialog open={abierto} onOpenChange={manejarCambioAbierto}>
@@ -114,79 +116,81 @@ export default function ModalPwd({ accion, className }: Props) {
             e.preventDefault();
             manejador();
           }}
-          className="space-y-4"
         >
-          {/* Fake inputs para engañar al autofill del navegador */}
           <input type="hidden" name="username" />
           <input type="hidden" name="password" />
 
-          <Field>
-            <FieldLabel className="sr-only" htmlFor="contrasenaActual">
-              Contraseña actual
-            </FieldLabel>
-            <Input
-              id="contrasenaActual"
-              type="password"
-              required
-              autoComplete="new-password"
-              readOnly={bloquearAutocompletado}
-              placeholder="Contraseña actual"
-              className={estiloInput}
-              value={contrasenaActual}
-              onFocus={() => setBloquearAutocompletado(false)}
-              onChange={(e) => setContrasenaActual(e.target.value)}
-            />
-          </Field>
+          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll">
+            <FieldGroup className="gap-2">
+              <Field className="gap-0.5">
+                <FieldLabel className={estiloLabel} htmlFor="contrasenaActual">
+                  Contraseña actual
+                </FieldLabel>
+                <Input
+                  id="contrasenaActual"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  readOnly={bloquearAutocompletado}
+                  placeholder="Ingresa tu contraseña actual"
+                  className={estiloInput}
+                  value={contrasenaActual}
+                  onFocus={() => setBloquearAutocompletado(false)}
+                  onChange={(e) => setContrasenaActual(e.target.value)}
+                />
+              </Field>
 
-          <Field>
-            <FieldLabel className="sr-only" htmlFor="nuevaContrasena">
-              Nueva contraseña
-            </FieldLabel>
-            <Input
-              id="nuevaContrasena"
-              type="password"
-              minLength={8}
-              required
-              autoComplete="new-password"
-              readOnly={bloquearAutocompletado}
-              placeholder="Nueva contraseña"
-              className={estiloInput}
-              value={nuevaContrasena}
-              onFocus={() => setBloquearAutocompletado(false)}
-              onChange={(e) => setNuevaContrasena(e.target.value)}
-            />
-          </Field>
+              <Field className="gap-0.5">
+                <FieldLabel className={estiloLabel} htmlFor="nuevaContrasena">
+                  Nueva contraseña
+                </FieldLabel>
+                <Input
+                  id="nuevaContrasena"
+                  type="password"
+                  minLength={8}
+                  required
+                  autoComplete="new-password"
+                  readOnly={bloquearAutocompletado}
+                  placeholder="Ingresa tu nueva contraseña"
+                  className={estiloInput}
+                  value={nuevaContrasena}
+                  onFocus={() => setBloquearAutocompletado(false)}
+                  onChange={(e) => setNuevaContrasena(e.target.value)}
+                />
+              </Field>
 
-          <p className="text-xl text-gray-500">Mínimo 8 caracteres</p>
+              <p className="text-xs text-gray-500">Mínimo 8 caracteres</p>
 
-          <Field>
-            <FieldLabel className="sr-only" htmlFor="repetirContrasena">
-              Repetir contraseña
-            </FieldLabel>
-            <Input
-              id="repetirContrasena"
-              type="password"
-              minLength={8}
-              required
-              autoComplete="off"
-              readOnly={bloquearAutocompletado}
-              placeholder="Repetir contraseña"
-              className={estiloInput}
-              value={repetirContrasena}
-              onFocus={() => setBloquearAutocompletado(false)}
-              onChange={(e) => setRepetirContrasena(e.target.value)}
-            />
-          </Field>
+              <Field className="gap-0.5">
+                <FieldLabel className={estiloLabel} htmlFor="repetirContrasena">
+                  Repetir contraseña
+                </FieldLabel>
+                <Input
+                  id="repetirContrasena"
+                  type="password"
+                  minLength={8}
+                  required
+                  autoComplete="off"
+                  readOnly={bloquearAutocompletado}
+                  placeholder="Repite tu nueva contraseña"
+                  className={estiloInput}
+                  value={repetirContrasena}
+                  onFocus={() => setBloquearAutocompletado(false)}
+                  onChange={(e) => setRepetirContrasena(e.target.value)}
+                />
+              </Field>
 
-          <p className="text-xl text-gray-500">
-            Debe coincidir con el campo Nueva Contraseña
-          </p>
+              <p className="text-xs text-gray-500">
+                Debe coincidir con el campo Nueva Contraseña
+              </p>
 
-          {contrasenasNoCoinciden && (
-            <p className="text-sm font-medium text-red-500">
-              Las contraseñas no son iguales
-            </p>
-          )}
+              {contrasenasNoCoinciden && (
+                <p className="text-xs font-medium text-red-500">
+                  Las contraseñas no son iguales
+                </p>
+              )}
+            </FieldGroup>
+          </div>
 
           <DialogFooter twoColumns>
             <Button type="button" variant="outline" onClick={cancelar}>
