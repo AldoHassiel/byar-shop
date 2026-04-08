@@ -84,7 +84,7 @@ export default function ModalCategoria({ editar, categoria, accion }: Props) {
             manejador();
           }}
         >
-          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll">
+          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll pb-4">
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="nombre">Nombre de la categoría</FieldLabel>
@@ -107,7 +107,7 @@ export default function ModalCategoria({ editar, categoria, accion }: Props) {
             </FieldGroup>
           </div>
 
-          <DialogFooter className="mt-4">
+          <DialogFooter>
             <Button
               variant="pink"
               className="w-full"

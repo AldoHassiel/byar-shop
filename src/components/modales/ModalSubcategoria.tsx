@@ -107,7 +107,7 @@ export default function ModalSubcategoria({
             manejador();
           }}
         >
-          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll">
+          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll pb-4">
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="nombre">
@@ -163,7 +163,7 @@ export default function ModalSubcategoria({
             </FieldGroup>
           </div>
 
-          <DialogFooter className="mt-4">
+          <DialogFooter>
             <Button
               variant="pink"
               className="w-full"

@@ -83,7 +83,7 @@ export default function ModalMarca({ accion, editar, marca }: Props) {
             manejador();
           }}
         >
-          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll">
+          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll pb-4">
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="nombre">Nombre de la marca</FieldLabel>
@@ -106,7 +106,7 @@ export default function ModalMarca({ accion, editar, marca }: Props) {
             </FieldGroup>
           </div>
 
-          <DialogFooter className="mt-4">
+          <DialogFooter>
             <Button
               variant="pink"
               className="w-full"
