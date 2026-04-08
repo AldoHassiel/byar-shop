@@ -56,7 +56,7 @@ const editarDatosGenerales = async (
       {
         nombre: datos.nombre,
         apellidos: datos.apellidos,
-        telefono: datos.telefono,
+        telefono: datos.telefono ?? "",
       },
     );
 
