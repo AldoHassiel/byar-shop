@@ -8,6 +8,20 @@ export default function useMisDatos() {
   const [datos, setDatos] = useState<MisDatos | null>(null);
   const [cargando, setCargando] = useState(false);
 
+  const actualizarUsuarioSesion = (cambios: Partial<MisDatos>) => {
+    setUsuario((prev) => {
+      if (!prev) return prev;
+
+      const actualizado = {
+        ...prev,
+        ...cambios,
+      };
+
+      localStorage.setItem("usuario", JSON.stringify(actualizado));
+      return actualizado;
+    });
+  };
+
   const obtener = async () => {
     if (!usuario) return;
     setCargando(true);
@@ -25,28 +39,68 @@ export default function useMisDatos() {
       true,
     );
     if (respuesta) {
-      setDatos((prev) => (prev ? { ...prev, ...nuevosDatos } : prev));
-      setUsuario((prev) =>
-        prev ? { ...prev, nombre: nuevosDatos.nombre } : prev,
-      );
+      const datosActualizados = await apiMisDatos.obtener(usuario.id);
+
+      if (datosActualizados) {
+        setDatos(datosActualizados);
+        actualizarUsuarioSesion({
+          nombre: datosActualizados.nombre,
+          apellidos: datosActualizados.apellidos,
+          telefono: datosActualizados.telefono,
+          correo: datosActualizados.correo,
+        });
+      } else {
+        setDatos((prev) => (prev ? { ...prev, ...nuevosDatos } : prev));
+        actualizarUsuarioSesion({
+          nombre: nuevosDatos.nombre,
+          apellidos: nuevosDatos.apellidos,
+          telefono: nuevosDatos.telefono,
+          correo: nuevosDatos.correo,
+        });
+      }
     }
     setCargando(false);
     return respuesta;
   };
 
-  const editarCorreo = async (correo: string) => {
+  const editarCorreo = async (correo: string, pwdActual: string) => {
     if (!usuario) return;
     setCargando(true);
-    const respuesta = await apiMisDatos.editarCorreo(usuario.id, correo, true);
-    if (respuesta) setDatos((prev) => (prev ? { ...prev, correo } : prev));
+    const respuesta = await apiMisDatos.editarCorreo(
+      usuario.id,
+      correo,
+      pwdActual,
+      true,
+    );
+    if (respuesta) {
+      const datosActualizados = await apiMisDatos.obtener(usuario.id);
+
+      if (datosActualizados) {
+        setDatos(datosActualizados);
+        actualizarUsuarioSesion({
+          nombre: datosActualizados.nombre,
+          apellidos: datosActualizados.apellidos,
+          telefono: datosActualizados.telefono,
+          correo: datosActualizados.correo,
+        });
+      } else {
+        setDatos((prev) => (prev ? { ...prev, correo } : prev));
+        actualizarUsuarioSesion({ correo });
+      }
+    }
     setCargando(false);
     return respuesta;
   };
 
-  const editarPwd = async (pwd: string) => {
+  const editarPwd = async (pwd: string, pwdActual: string) => {
     if (!usuario) return;
     setCargando(true);
-    const respuesta = await apiMisDatos.editarPwd(usuario.id, pwd, true);
+    const respuesta = await apiMisDatos.editarPwd(
+      usuario.id,
+      pwd,
+      pwdActual,
+      true,
+    );
     setCargando(false);
     return respuesta;
   };
