@@ -7,6 +7,7 @@ import {
   Building2,
   IdCard,
   LayoutDashboard,
+  LogOut,
   Package,
   Tag,
   Tags,
@@ -86,6 +87,7 @@ export default function LayoutAdmin() {
                 className="w-full mt-5"
                 onClick={cerrarSesion}
               >
+                <LogOut size={18} />
                 Cerrar Sesión
               </Button>
             </div>
