@@ -34,7 +34,7 @@ export default function GestionMarcas() {
                 </colgroup>
                 <thead>
                   <tr className="text-gray-800 font-semibold">
-                    <th className="text-left pb-1 border-b border-gray-300">
+                    <th className="text-center pb-1 border-b border-gray-300">
                       Nombre
                     </th>
                     <th className="text-center pb-1 border-b border-gray-300">
@@ -50,7 +50,7 @@ export default function GestionMarcas() {
                 </thead>
                 <tbody>
                   <tr className="text-gray-600">
-                    <td className="py-3 align-middle truncate">{m.nombre}</td>
+                    <td className="py-3 align-middle truncate text-center">{m.nombre}</td>
                     <td className="py-3 align-middle text-center truncate max-w-0 px-2">
                       {m.descripcion ? m.descripcion : "Sin descripción"}
                     </td>
