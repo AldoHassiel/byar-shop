@@ -26,18 +26,18 @@ interface MenuItem {
 const menu: MenuItem[] = [
   { id: 6, nombre: "Perfil", Icono: UserRound, enlace: "/perfil" },
 
-  { id: 1, nombre: "Mi Carrito", Icono: ShoppingCart, enlace: "/mi-carrito" },
-  { id: 2, nombre: "Mis Compras", Icono: ReceiptText, enlace: "/mis-compras" },
+  { id: 1, nombre: "Mi carrito", Icono: ShoppingCart, enlace: "/mi-carrito" },
+  { id: 2, nombre: "Mis compras", Icono: ReceiptText, enlace: "/mis-compras" },
   { id: 3, nombre: "Favoritos", Icono: Heart, enlace: "/mis-favoritos" },
   {
     id: 4,
-    nombre: "Metodos de Pago",
+    nombre: "Metodos de pago",
     Icono: CreditCard,
     enlace: "/mis-metodos-de-pago",
   },
   {
     id: 5,
-    nombre: "Mis Direcciones",
+    nombre: "Mis direcciones",
     Icono: MapPinned,
     enlace: "/mi-direcciones",
   },
