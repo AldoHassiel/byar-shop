@@ -2,6 +2,7 @@ import { apiMisDatos } from "@/api/mis-datos.api";
 import { useAutenticacion } from "@/global/AuthContexto";
 import type { MisDatos } from "@/types/mis-datos";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function useMisDatos() {
   const { usuario, setUsuario, cerrarSesion } = useAutenticacion();
@@ -32,6 +33,19 @@ export default function useMisDatos() {
 
   const editarDatosGenerales = async (nuevosDatos: MisDatos) => {
     if (!usuario) return;
+
+    if (!nuevosDatos.nombre.trim()) {
+      toast.error("El nombre es obligatorio", { position: "bottom-right" });
+      return;
+    }
+
+    if (!nuevosDatos.apellidos.trim()) {
+      toast.error("Los apellidos son obligatorios", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
     setCargando(true);
     const respuesta = await apiMisDatos.editarDatosGenerales(
       usuario.id,
@@ -109,11 +123,11 @@ export default function useMisDatos() {
     if (!usuario) return;
     setCargando(true);
     const respuesta = await apiMisDatos.eliminarCuenta(usuario.id, true);
-    
+
     if (respuesta) {
       cerrarSesion();
     }
-    
+
     setCargando(false);
     return respuesta;
   };
