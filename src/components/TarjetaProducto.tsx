@@ -96,9 +96,9 @@ export default function TarjetaProducto({ producto }: TarjetaProductoProps) {
         </div>
       </Link>
 
-      <footer className="mt-auto flex justify-center gap-x-2">
+      <footer className="mt-auto flex justify-center items-center gap-x-2">
         <Button
-          className="rounded-2xl py-4 flex-1"
+          variant="pink"
           onClick={() => agregarAlCarrito(producto.id, 1)}
         >
           Agregar al carrito
