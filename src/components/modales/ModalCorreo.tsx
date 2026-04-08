@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Field, FieldLabel } from "../ui/field";
+import { Field, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 
@@ -52,6 +52,11 @@ export default function ModalCorreo({ correoActual, accion, className }: Props) 
     repetirCorreo.trim() !== "" &&
     nuevoCorreo.trim() !== repetirCorreo.trim();
 
+  const estiloInput =
+    "bg-gray-100/70 border-gray-300 text-gray-800 placeholder:text-gray-500";
+
+  const estiloLabel = "text-gray-700";
+
   const manejador = async () => {
     const correoLimpio = nuevoCorreo.trim();
     const repetirCorreoLimpio = repetirCorreo.trim();
@@ -86,9 +91,6 @@ export default function ModalCorreo({ correoActual, accion, className }: Props) 
     }
   };
 
-  const estiloInput =
-    "h-14 rounded-full border-gray-500/70 px-5 text-xl placeholder:text-gray-400";
-
   return (
     <Dialog open={abierto} onOpenChange={manejarCambioAbierto}>
       <DialogTrigger asChild>
@@ -115,73 +117,77 @@ export default function ModalCorreo({ correoActual, accion, className }: Props) 
             e.preventDefault();
             manejador();
           }}
-          className="space-y-4"
         >
-          {/* Fake inputs para engañar al autofill del navegador */}
           <input type="hidden" name="username" />
           <input type="hidden" name="password" />
 
-          <p className="text-xl text-gray-500">E-mail actual, {correoActual}</p>
+          <div className="overflow-y-auto max-h-[60vh] px-2 dialog-scroll">
+            <FieldGroup className="gap-2">
+              <p className="text-sm text-gray-500">
+                E-mail actual: <span className="text-gray-600">{correoActual}</span>
+              </p>
 
-          <Field>
-            <FieldLabel className="sr-only" htmlFor="contrasenaActual">
-              Contraseña actual
-            </FieldLabel>
-            <Input
-              id="contrasenaActual"
-              type="password"
-              required
-              autoComplete="new-password"
-              readOnly={bloquearAutocompletado}
-              placeholder="Contraseña actual"
-              className={estiloInput}
-              value={contrasenaActual}
-              onFocus={() => setBloquearAutocompletado(false)}
-              onChange={(e) => setContrasenaActual(e.target.value)}
-            />
-          </Field>
+              <Field className="gap-0.5">
+                <FieldLabel className={estiloLabel} htmlFor="contrasenaActual">
+                  Contraseña actual
+                </FieldLabel>
+                <Input
+                  id="contrasenaActual"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  readOnly={bloquearAutocompletado}
+                  placeholder="Ingresa tu contraseña actual"
+                  className={estiloInput}
+                  value={contrasenaActual}
+                  onFocus={() => setBloquearAutocompletado(false)}
+                  onChange={(e) => setContrasenaActual(e.target.value)}
+                />
+              </Field>
 
-          <Field>
-            <FieldLabel className="sr-only" htmlFor="nuevoCorreo">
-              Nuevo e-mail
-            </FieldLabel>
-            <Input
-              id="nuevoCorreo"
-              type="email"
-              required
-              autoComplete="off"
-              readOnly={bloquearAutocompletado}
-              placeholder="Nuevo e-mail"
-              className={estiloInput}
-              value={nuevoCorreo}
-              onFocus={() => setBloquearAutocompletado(false)}
-              onChange={(e) => setNuevoCorreo(e.target.value)}
-            />
-          </Field>
+              <Field className="gap-0.5">
+                <FieldLabel className={estiloLabel} htmlFor="nuevoCorreo">
+                  Nuevo e-mail
+                </FieldLabel>
+                <Input
+                  id="nuevoCorreo"
+                  type="email"
+                  required
+                  autoComplete="off"
+                  readOnly={bloquearAutocompletado}
+                  placeholder="Ingresa tu nuevo e-mail"
+                  className={estiloInput}
+                  value={nuevoCorreo}
+                  onFocus={() => setBloquearAutocompletado(false)}
+                  onChange={(e) => setNuevoCorreo(e.target.value)}
+                />
+              </Field>
 
-          <Field>
-            <FieldLabel className="sr-only" htmlFor="repetirCorreo">
-              Repetir e-mail
-            </FieldLabel>
-            <Input
-              id="repetirCorreo"
-              type="email"
-              required
-              autoComplete="off"
-              readOnly={bloquearAutocompletado}
-              placeholder="Nuevo e-mail"
-              className={estiloInput}
-              value={repetirCorreo}
-              onFocus={() => setBloquearAutocompletado(false)}
-              onChange={(e) => setRepetirCorreo(e.target.value)}
-            />
-          </Field>
+              <Field className="gap-0.5">
+                <FieldLabel className={estiloLabel} htmlFor="repetirCorreo">
+                  Repetir e-mail
+                </FieldLabel>
+                <Input
+                  id="repetirCorreo"
+                  type="email"
+                  required
+                  autoComplete="off"
+                  readOnly={bloquearAutocompletado}
+                  placeholder="Repite tu nuevo e-mail"
+                  className={estiloInput}
+                  value={repetirCorreo}
+                  onFocus={() => setBloquearAutocompletado(false)}
+                  onChange={(e) => setRepetirCorreo(e.target.value)}
+                />
+              </Field>
 
-          {correosNoCoinciden && (
-            <p className="text-sm font-medium text-red-500">
-              Los correos no son iguales
-            </p>
-          )}
+              {correosNoCoinciden && (
+                <p className="text-xs font-medium text-red-500">
+                  Los correos no son iguales
+                </p>
+              )}
+            </FieldGroup>
+          </div>
 
           <DialogFooter twoColumns>
             <Button type="button" variant="outline" onClick={cancelar}>
