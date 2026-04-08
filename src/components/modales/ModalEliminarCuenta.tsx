@@ -34,7 +34,7 @@ export default function ModalEliminarCuenta({ accion, trigger }: Props) {
           <DialogTitle className="text-2xl">Eliminar cuenta</DialogTitle>
         </DialogHeader>
 
-        <p className="text-xl text-gray-500">
+        <p className="text-sm text-gray-500">
           ¿Seguro que deseas eliminar tu cuenta?
           <span className="block text-gray-700">Esta acción no se puede deshacer</span>
         </p>
