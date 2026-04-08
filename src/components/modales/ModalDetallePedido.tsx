@@ -19,39 +19,46 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import { Link } from "react-router";
+import type { DetallePedido } from "@/types/pedidos";
 
 interface Props {
   abierto: boolean;
   setAbierto: (abierto: boolean) => void;
-  detalleCompra: DetalleCompra | null;
+  detallePedido: DetallePedido | null;
   cargando: boolean;
 }
 
-export default function ModalDetalleCompra({
+export default function ModalDetallePedido({
   abierto,
   setAbierto,
-  detalleCompra,
+  detallePedido,
   cargando,
 }: Props) {
   return (
     <Dialog open={abierto} onOpenChange={setAbierto} modal={true}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="text-xl">{`N° Pedido ${detalleCompra?.pedido.id ?? "--"}`}</DialogTitle>
-          <DialogDescription>{`Fecha de compra: ${detalleCompra?.pedido.fecha ?? "--/--/--"}`}</DialogDescription>
+      <DialogContent className="gap-0">
+        <DialogHeader className="gap-0">
+          <DialogTitle className="text-xl">{`N° Pedido ${detallePedido?.pedido.id ?? "--"}`}</DialogTitle>
+          <DialogDescription>{`Fecha de compra: ${detallePedido?.pedido.fecha ?? "--/--/--"}`}</DialogDescription>
         </DialogHeader>
         {cargando ? (
           <div className="flex justify-center py-8">
             <Spinner className="size-8 text-byar" />
           </div>
         ) : (
-          <div className="space-y-2 overflow-hidden">
-            <div className="space-y-1">
-              <span className="block text-[18px] font-medium">{`${detalleCompra?.productos.length} articulos`}</span>
+          <div className="space-y-1 overflow-hidden mt-1 overflow-y-auto max-h-[80vh] dialog-scroll">
+            <div>
+              <span className="block text-[18px] font-medium">
+                Nombre del comprador
+              </span>
+              <span>{`${detallePedido?.pedido.usuario_nombre} ${detallePedido?.pedido.usuario_apellidos}`}</span>
+            </div>
+            <div>
+              <span className="block text-[18px] font-medium">{`${detallePedido?.productos.length} articulos`}</span>
               <div className="relative px-3">
                 <Carousel opts={{ align: "center" }}>
                   <CarouselContent className="px-1">
-                    {detalleCompra?.productos.map((producto) => (
+                    {detallePedido?.productos.map((producto) => (
                       <CarouselItem
                         key={producto.id}
                         className="basis-1/2 md:basis-1/3 flex justify-center"
@@ -100,10 +107,10 @@ export default function ModalDetalleCompra({
                 <div className="flex items-center gap-x-2">
                   {
                     iconosMarcas[
-                      detalleCompra?.pedido.tarjeta_marca ?? "Desconocida"
+                      detallePedido?.pedido.tarjeta_marca ?? "Desconocida"
                     ]
                   }
-                  <span>{`**** ${detalleCompra?.pedido.tarjeta_ultimos_digitos}`}</span>
+                  <span>{`**** ${detallePedido?.pedido.tarjeta_ultimos_digitos}`}</span>
                 </div>
               </div>
               <div>
@@ -111,8 +118,8 @@ export default function ModalDetalleCompra({
                   Dirección de envío
                 </span>
                 <div className="">
-                  <p>{`${detalleCompra?.pedido.direccion_calle} ${detalleCompra?.pedido.direccion_numero_exterior} ${detalleCompra?.pedido.direccion_numero_interior && detalleCompra?.pedido.direccion_numero_interior}, ${detalleCompra?.pedido.direccion_especificaciones || "Sin especificaciones"}`}</p>
-                  <p>{`${detalleCompra?.pedido.direccion_colonia}, ${detalleCompra?.pedido.direccion_codigo_postal} ${detalleCompra?.pedido.direccion_municipio}, ${detalleCompra?.pedido.direccion_estado} `}</p>
+                  <p>{`${detallePedido?.pedido.direccion_calle} ${detallePedido?.pedido.direccion_numero_exterior} ${detallePedido?.pedido.direccion_numero_interior && detallePedido?.pedido.direccion_numero_interior}, ${detallePedido?.pedido.direccion_especificaciones || "Sin especificaciones"}`}</p>
+                  <p>{`${detallePedido?.pedido.direccion_colonia}, ${detallePedido?.pedido.direccion_codigo_postal} ${detallePedido?.pedido.direccion_municipio}, ${detallePedido?.pedido.direccion_estado} `}</p>
                 </div>
               </div>
             </div>
@@ -120,18 +127,18 @@ export default function ModalDetalleCompra({
             <div>
               <div className="flex justify-between">
                 <span className="block">Subtotal</span>
-                <span className="block">{`MXN ${detalleCompra?.pedido.subtotal}`}</span>
+                <span className="block">{`MXN ${detallePedido?.pedido.subtotal}`}</span>
               </div>
               <div className="flex justify-between">
                 <span className="block ">Costo de envío</span>
-                <span className="block">{`MXN ${detalleCompra?.pedido.costo_envio}`}</span>
+                <span className="block">{`MXN ${detallePedido?.pedido.costo_envio}`}</span>
               </div>
               <div className="flex justify-between">
                 <div className="space-x-1">
                   <span className="font-bold text-lg">Total</span>
                   <span>(IVA incluido)</span>
                 </div>
-                <span className="block font-bold text-lg">{`MXN ${detalleCompra?.pedido.total}`}</span>
+                <span className="block font-bold text-lg">{`MXN ${detallePedido?.pedido.total}`}</span>
               </div>
             </div>
           </div>
