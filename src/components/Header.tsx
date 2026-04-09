@@ -10,7 +10,7 @@ import {
   Tag,
   User2,
 } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import useCategorias from "@/hooks/useCategorias";
 import useSubcategorias from "@/hooks/useSubcategorias";
@@ -25,12 +25,31 @@ import {
   AccordionItem,
 } from "@/components/ui/accordion";
 import { useAutenticacion } from "@/global/AuthContexto";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./ui/command";
+import useProductos from "@/hooks/useProductos";
 
 interface Props {
   nombre: string | undefined;
 }
 
 export default function Header({ nombre }: Props) {
+  const [abrirBuscador, setAbrirBuscador] = useState(false);
+  const [query, setQuery] = useState("");
+  const { productos, setProductos, cargando, obtenerTodos } = useProductos({
+    limiteInicial: 0,
+    paginaInicial: 1,
+  });
+
+  const navigate = useNavigate();
+
   const { usuario } = useAutenticacion();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [categoriaExpandida, setCategoriaExpandida] = useState<number | null>(
@@ -38,45 +57,6 @@ export default function Header({ nombre }: Props) {
   );
   const { categorias, cargando: cargandoCategorias } = useCategorias();
   const { subCategorias, cargandoSubcategorias } = useSubcategorias();
-
-  useEffect(() => {
-    const posicionOriginal = document.body.style.position;
-    const topOriginal = document.body.style.top;
-    const leftOriginal = document.body.style.left;
-    const rightOriginal = document.body.style.right;
-    const widthOriginal = document.body.style.width;
-    const overflowYOriginal = document.body.style.overflowY;
-    const scrollY = window.scrollY;
-
-    if (menuAbierto) {
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = "0";
-      document.body.style.right = "0";
-      document.body.style.width = "100%";
-      document.body.style.overflowY = "scroll";
-    } else {
-      document.body.style.position = posicionOriginal;
-      document.body.style.top = topOriginal;
-      document.body.style.left = leftOriginal;
-      document.body.style.right = rightOriginal;
-      document.body.style.width = widthOriginal;
-      document.body.style.overflowY = overflowYOriginal;
-    }
-
-    return () => {
-      document.body.style.position = posicionOriginal;
-      document.body.style.top = topOriginal;
-      document.body.style.left = leftOriginal;
-      document.body.style.right = rightOriginal;
-      document.body.style.width = widthOriginal;
-      document.body.style.overflowY = overflowYOriginal;
-
-      if (menuAbierto) {
-        window.scrollTo(0, scrollY);
-      }
-    };
-  }, [menuAbierto]);
 
   const subcategoriasPorCategoria = useMemo(() => {
     const agrupadas = new Map<number, typeof subCategorias>();
@@ -105,6 +85,33 @@ export default function Header({ nombre }: Props) {
 
     return Tag;
   };
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setProductos([]);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      obtenerTodos(
+        undefined,
+        query,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        1,
+        8,
+      );
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
+
+  useEffect(() => {
+    if (!abrirBuscador) setQuery("");
+  }, [abrirBuscador]);
 
   return (
     <header className="fixed top-0 w-full z-50 h-20 flex items-center justify-between bg-byar/40 backdrop-blur-md border-b border-white/20 px-15">
@@ -143,6 +150,16 @@ export default function Header({ nombre }: Props) {
               }
               className="w-full"
             >
+              <div className="flex items-center gap-2 py-1.5 rounded px-1 hover:bg-muted">
+                <Package size={18} className="text-fuchsia-500" />
+                <Link
+                  to="/productos"
+                  onClick={() => setMenuAbierto(false)}
+                  className="text-base font-semibold hover:text-byar"
+                >
+                  Todos los productos
+                </Link>
+              </div>
               {categorias.map((categoria) => {
                 const subcategorias =
                   subcategoriasPorCategoria.get(categoria.id) ?? [];
@@ -235,9 +252,13 @@ export default function Header({ nombre }: Props) {
         </h1>
       </Link>
       <nav className="flex items-center space-x-5">
-        <Link to="/productos">
-          <Search color="white" size={32} />
-        </Link>
+        <Search
+          color="white"
+          size={32}
+          onClick={() => setAbrirBuscador(true)}
+          className="cursor-pointer"
+        />
+
         <Link to="/mi-carrito">
           <ShoppingCart color="white" size={32} />
         </Link>
@@ -245,6 +266,52 @@ export default function Header({ nombre }: Props) {
           <User2 color="white" size={32} />
         </Link>
       </nav>
+
+      <CommandDialog open={abrirBuscador} onOpenChange={setAbrirBuscador}>
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder="Escribe el nombre del producto"
+            value={query}
+            onValueChange={setQuery}
+          />
+          <CommandList>
+            {query.trim() && cargando && (
+              <CommandEmpty>Buscando...</CommandEmpty>
+            )}
+            {query.trim() && !cargando && productos.length === 0 && (
+              <CommandEmpty>Sin resultados para "{query}"</CommandEmpty>
+            )}
+            {query.trim() && !cargando && productos.length > 0 && (
+              <CommandGroup heading="Productos">
+                {productos.map((p) => (
+                  <CommandItem
+                    key={p.id}
+                    onSelect={() => {
+                      setAbrirBuscador(false);
+                      navigate(`/productos/${p.id}`);
+                    }}
+                    className="cursor-pointer hover:bg-byarclaro"
+                  >
+                    <img
+                      src={p.imagen_url ?? ""}
+                      className="w-8 h-8 object-cover rounded-md mr-3"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{p.nombre}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {p.nombre_marca}
+                      </p>
+                    </div>
+                    <span className="text-sm font-semibold">
+                      MXN {Number(p.precio).toFixed(2)}
+                    </span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+      </CommandDialog>
     </header>
   );
 }
