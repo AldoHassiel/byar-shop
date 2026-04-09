@@ -44,6 +44,21 @@ export default function Productos() {
 
   const { agregarAlCarrito } = useCarrito();
 
+  const marcasFiltradas = idCategoria || idSubcategoria
+    ? marcas.filter((marca) =>
+      productos.some((producto) => producto.id_marca === marca.id)
+    )
+    : marcas;
+
+  useEffect(() => {
+    if (
+      idMarca &&
+      !marcasFiltradas.some((m) => m.id === idMarca)
+    ) {
+      setIdMarca(undefined);
+    }
+  }, [idCategoria, idSubcategoria, marcasFiltradas]);
+
   const subcategoriasFiltradas: Subcategorias[] = idCategoria
     ? subCategorias.filter((sub) => sub.id_categoria === idCategoria)
     : subCategorias;
@@ -202,7 +217,7 @@ export default function Productos() {
               <SelectGroup>
                 <SelectItem value="all">Marcas</SelectItem>
 
-                {marcas.map((marc) => (
+                {marcasFiltradas.map((marc) => (
                   <SelectItem key={marc.id} value={String(marc.id)}>
                     {marc.nombre}
                   </SelectItem>
