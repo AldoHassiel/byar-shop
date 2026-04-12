@@ -21,6 +21,7 @@ import useFavoritos from "@/hooks/useFavoritos";
 import useCarrito from "@/global/CarritoContexto";
 import { Spinner } from "@/components/ui/spinner";
 import type { Subcategorias } from "@/types/subcategoria";
+import ModuloVacio from "@/components/ModuloVacio";
 const limite = 12;
 
 export default function Productos() {
@@ -278,58 +279,65 @@ export default function Productos() {
       </div>
 
       {/* GRID DE PRODUCTOS */}
-      <div className="grid grid-cols-4 gap-6 px-6 pb-6">
-        {productos.map((producto) => (
-          <Card
-            key={producto.id}
-            className="rounded-2xl shadow-sm border bg-white overflow-hidden hover:shadow-md transition"
-          >
-            {/* Imagen */}
-            <Link to={`/productos/${producto.id}`}>
-              <div className="w-full h-56 bg-white-100 flex items-center justify-center">
-                {producto.imagen_url && (
-                  <img
-                    src={producto.imagen_url}
-                    alt={producto.nombre}
-                    className="h-full object-contain"
-                  />
-                )}
-              </div>
-
-              <CardContent className="p-4 space-y-1">
-                <p className="font-semibold text-lg">MXN {producto.precio}</p>
-
-                <p className="text-sm text-gray-700 leading-tight">
-                  {producto.nombre}
-                </p>
-
-                <p className="text-xs font-semibold text-black">
-                  {producto.nombre_marca || "Sin marca"}
-                </p>
-              </CardContent>
-            </Link>
-            <CardFooter className="p-4 flex items-center gap-2">
-              <Button
-                variant="pink"
-                className="flex-1"
-                onClick={() => agregarAlCarrito(producto.id, 1)}
+      {productos.length === 0 ? (
+        <div className="flex justify-center items-center min-h-[60vh] w-full">
+          <ModuloVacio modulo="productos" />
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-4 gap-6 px-6 pb-6">
+            {productos.map((producto) => (
+              <Card
+                key={producto.id}
+                className="rounded-2xl shadow-sm border bg-white overflow-hidden hover:shadow-md transition"
               >
-                Agregar al carrito
-              </Button>
-              <Corazon
-                es_favorito={producto.es_favorito}
-                onToggle={() => manejarFavorito(producto)}
-              />
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-      <Paginacion
-        paginaActual={paginaActual}
-        totalPaginas={totalPaginas}
-        onCambiarPagina={setPaginaActual}
-        className="mb-12"
-      />
+                {/* Imagen */}
+                <Link to={`/productos/${producto.id}`}>
+                  <div className="w-full h-56 bg-white-100 flex items-center justify-center">
+                    {producto.imagen_url && (
+                      <img
+                        src={producto.imagen_url}
+                        alt={producto.nombre}
+                        className="h-full object-contain"
+                      />
+                    )}
+                  </div>
+
+                  <CardContent className="p-4 space-y-1">
+                    <p className="font-semibold text-lg">MXN {producto.precio}</p>
+
+                    <p className="text-sm text-gray-700 leading-tight">
+                      {producto.nombre}
+                    </p>
+
+                    <p className="text-xs font-semibold text-black">
+                      {producto.nombre_marca || "Sin marca"}
+                    </p>
+                  </CardContent>
+                </Link>
+                <CardFooter className="p-4 flex items-center gap-2">
+                  <Button
+                    variant="pink"
+                    className="flex-1"
+                    onClick={() => agregarAlCarrito(producto.id, 1)}
+                  >
+                    Agregar al carrito
+                  </Button>
+                  <Corazon
+                    es_favorito={producto.es_favorito}
+                    onToggle={() => manejarFavorito(producto)}
+                  />
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+          <Paginacion
+            paginaActual={paginaActual}
+            totalPaginas={totalPaginas}
+            onCambiarPagina={setPaginaActual}
+            className="mb-12"
+          />
+        </>)}
     </div>
   );
 }
