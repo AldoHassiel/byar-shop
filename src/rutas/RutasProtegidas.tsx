@@ -28,6 +28,8 @@ export function RutaAdmin() {
     );
   }
 
-  if (!usuario?.es_admin) return <Navigate to="/iniciar-sesion" replace />;
+  if (!usuario) return <Navigate to="/iniciar-sesion" replace />;
+
+  if (!usuario.es_admin) return <Navigate to="/perfil" replace />;
   return <Outlet />;
 }

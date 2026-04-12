@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useNavigate } from "react-router";
 
 interface ContextoAutenticacionTipo {
   usuario: Usuario | null;
@@ -18,6 +19,8 @@ interface ContextoAutenticacionTipo {
     correo: string,
     pwd: string,
   ) => Promise<boolean | undefined>;
+
+  alternarModo: () => void;
 
   cerrarSesion: () => void;
 
@@ -34,6 +37,7 @@ interface Props {
 export function ProveedorAutenticacion({ children }: Props) {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [cargando, setCargando] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const usuarioGuardado = localStorage.getItem("usuario");
@@ -48,6 +52,9 @@ export function ProveedorAutenticacion({ children }: Props) {
     setCargando(true);
     const respuesta = await apiAuth.inciarSesion(correo, pwd, true);
     if (respuesta?.estado) {
+      respuesta.datos[0].usuario.modo_admin =
+        respuesta.datos[0].usuario.es_admin;
+
       setUsuario(respuesta.datos[0].usuario);
       localStorage.setItem(
         "usuario",
@@ -84,6 +91,22 @@ export function ProveedorAutenticacion({ children }: Props) {
     return respuesta?.estado;
   };
 
+  const alternarModo = () => {
+    if (!usuario?.es_admin) return;
+
+    setUsuario((prev) => {
+      if (!prev) return prev;
+
+      const actualizado: Usuario = { ...prev, modo_admin: !prev.modo_admin };
+      localStorage.setItem("usuario", JSON.stringify(actualizado));
+
+      return actualizado;
+    });
+
+    const modo_admin = !usuario.modo_admin;
+    navigate(modo_admin ? "/admin" : "/perfil");
+  };
+
   const cerrarSesion = async () => {
     setCargando(true);
     await apiAuth.cerrarSesion();
@@ -100,6 +123,7 @@ export function ProveedorAutenticacion({ children }: Props) {
         cargando,
         iniciarSesion,
         registrarCuenta,
+        alternarModo,
         cerrarSesion,
         setUsuario,
       }}

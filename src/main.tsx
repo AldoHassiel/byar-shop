@@ -7,13 +7,13 @@ import { ProveedorNegocio } from "./global/NegocioContexto.tsx";
 import { ProveedorCarrito } from "./global/CarritoContexto.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <ProveedorAutenticacion>
-    <ProveedorNegocio>
-      <ProveedorCarrito>
-        <BrowserRouter>
+  <BrowserRouter>
+    <ProveedorAutenticacion>
+      <ProveedorNegocio>
+        <ProveedorCarrito>
           <App />
-        </BrowserRouter>
-      </ProveedorCarrito>
-    </ProveedorNegocio>
-  </ProveedorAutenticacion>,
+        </ProveedorCarrito>
+      </ProveedorNegocio>
+    </ProveedorAutenticacion>
+  </BrowserRouter>,
 );

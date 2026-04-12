@@ -262,7 +262,9 @@ export default function Header({ nombre }: Props) {
         <Link to="/mi-carrito">
           <ShoppingCart color="white" size={32} />
         </Link>
-        <Link to={usuario?.es_admin ? "/admin" : "/perfil"}>
+        <Link
+          to={usuario?.es_admin && usuario.modo_admin ? "/admin" : "/perfil"}
+        >
           <User2 color="white" size={32} />
         </Link>
       </nav>
