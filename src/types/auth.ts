@@ -10,5 +10,6 @@ export interface Usuario {
   telefono: string | null;
   correo: string;
   es_admin: boolean;
+  modo_admin: boolean;
   activo: boolean;
 }
