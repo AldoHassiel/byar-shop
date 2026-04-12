@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAutenticacion } from "@/global/AuthContexto";
 import { useNegocio } from "@/global/NegocioContexto";
 import {
+  ArrowLeftRightIcon,
   Building2,
   IdCard,
   LayoutDashboard,
@@ -40,7 +41,7 @@ const menu: MenuItem[] = [
 
 export default function LayoutAdmin() {
   const { negocio } = useNegocio();
-  const { cerrarSesion } = useAutenticacion();
+  const { usuario, alternarModo, cerrarSesion } = useAutenticacion();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -82,6 +83,19 @@ export default function LayoutAdmin() {
             </ul>
 
             <div className="mt-auto">
+              {usuario?.es_admin && (
+                <Button
+                  variant="pink"
+                  className="w-full mt-5"
+                  onClick={alternarModo}
+                >
+                  <ArrowLeftRightIcon size={18} />
+                  {usuario.modo_admin
+                    ? "Cambiar a cliente"
+                    : "Cambiar a administrador"}
+                </Button>
+              )}
+
               <Button
                 variant="pink"
                 className="w-full mt-5"
