@@ -10,7 +10,7 @@ const preguntas = [
     id: "item-1",
     pregunta: "¿Cómo puedo crear una cuenta?",
     respuesta:
-      "Haz clic en Registrarme en la parte superior, completa tus datos y confirma tu correo para activar tu cuenta.",
+      "Haz clic en el icono de usuario en la parte superior, ingresa al apartado de \"¿Aun no tienes cuenta? Crear una cuenta\" completa tus datos y listo, ya puedes empezar a comprar.",
   },
   {
     id: "item-2",
@@ -46,13 +46,13 @@ const preguntas = [
     id: "item-7",
     pregunta: "¿Dónde encuentro información sobre mi pedidos?",
     respuesta:
-      "Puedes encontrar toda la información sobre envíos y devoluciones en la sección Ayuda.",
+      "Desde tu perfil entra a Mis compras, selecciona el pedido que quieres revisar y podrás ver su detalle",
   },
   {
     id: "item-8",
     pregunta: "¿Cómo puedo eliminar mi cuenta?",
     respuesta:
-      "Si deseas eliminar tu cuenta, por favor contacta con nuestro equipo de soporte a través del formulario de contacto en la sección Ayuda.",
+      "Desde tu perfil entra a Mis datos y usa el botón Eliminar cuenta. Ten en cuenta que esta acción es irreversible.",
   },
 ];
 
