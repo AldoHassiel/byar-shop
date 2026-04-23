@@ -169,7 +169,8 @@ export default function Productos() {
         <h1 className="text-6xl not-italic">{titulo}</h1>
 
         <div className="flex gap-3">
-          {/* PRECIOS */}
+          {/* PRECIOS */
+          }
           <Select
             value={precioSeleccionado}
             onValueChange={(value) => {
