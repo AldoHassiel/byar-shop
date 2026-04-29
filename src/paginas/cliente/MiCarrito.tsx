@@ -284,16 +284,16 @@ export default function MiCarrito() {
                 <div className="flex justify-between">
                   <span className="block font-bold text-xl">Subtotal</span>
                   <span className="block">
-                    {carrito?.resumen.subtotal
-                      ? `MXN ${carrito?.resumen.subtotal}`
+                    {carrito?.resumen?.subtotal
+                      ? `MXN ${carrito?.resumen.subtotal || 0}`
                       : "- - -"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="block text-xl">Costo de envío</span>
                   <span className="block">
-                    {carrito?.resumen.costo_de_envio
-                      ? `MXN ${carrito?.resumen.costo_de_envio}`
+                    {carrito?.resumen?.costo_de_envio
+                      ? `MXN ${carrito?.resumen.costo_de_envio || 0}`
                       : "- - -"}
                   </span>
                 </div>
@@ -301,8 +301,8 @@ export default function MiCarrito() {
                 <div className="flex justify-between">
                   <span className="block font-bold text-xl">Total</span>
                   <span className="block">
-                    {carrito?.resumen.total
-                      ? `MXN ${carrito?.resumen.total}`
+                    {carrito?.resumen?.total
+                      ? `MXN ${carrito?.resumen.total || 0}`
                       : "- - -"}
                   </span>
                 </div>
