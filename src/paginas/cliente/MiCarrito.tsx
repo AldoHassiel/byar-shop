@@ -46,7 +46,6 @@ export default function MiCarrito() {
   const { tarjetas, crearTarjeta } = useMetodosDePago();
 
   const categoriasCarritoRef = useRef<number[]>([]);
-  const direccionesCargadasRef = useRef(false);
 
   const categoriasCarrito = useMemo(() => {
     const nuevas = [...new Set(carrito?.productos.map((p) => p.id_categoria))];
@@ -86,28 +85,46 @@ export default function MiCarrito() {
   }, [carrito?.productos.length]);
 
   useEffect(() => {
-    if (!direccionesCargadasRef.current) return;
     obtenerCarrito(Number(direccionSel) || undefined);
   }, [direccionSel]);
 
   useEffect(() => {
-    if (direcciones.length === 0 && tarjetas.length === 0) return;
-
-    direccionesCargadasRef.current = true;
-
     const direccionPredeterminada = direcciones.find(
       (d) => d.es_predeterminada,
     );
-    const tarjetaPredeterminada = tarjetas.find((t) => t.es_predeterminada);
 
     if (direccionPredeterminada) {
       setDireccionSel(String(direccionPredeterminada.id));
     } else {
       obtenerCarrito(undefined);
     }
+  }, [direcciones]);
 
-    if (tarjetaPredeterminada) setTarjetaSel(String(tarjetaPredeterminada.id));
-  }, [direcciones, tarjetas]);
+  useEffect(() => {
+    const tarjetaPredeterminada = tarjetas.find((t) => t.es_predeterminada);
+
+    if (tarjetaPredeterminada) {
+      setTarjetaSel(String(tarjetaPredeterminada.id));
+    }
+  }, [tarjetas]);
+
+  useEffect(() => {
+    if (direcciones.length === 0) {
+      setDireccionSel("");
+      obtenerCarrito(undefined);
+    }
+  }, [direcciones.length]);
+
+  useEffect(() => {
+    if (tarjetas.length === 0) {
+      setTarjetaSel("");
+      obtenerCarrito(undefined);
+    }
+  }, [tarjetas.length]);
+
+  useEffect(() => {
+    obtenerCarrito();
+  }, []);
 
   if (cargando && !carrito)
     return (
@@ -285,7 +302,7 @@ export default function MiCarrito() {
                   <span className="block font-bold text-xl">Subtotal</span>
                   <span className="block">
                     {carrito?.resumen?.subtotal
-                      ? `MXN ${carrito?.resumen.subtotal || 0}`
+                      ? `MXN ${carrito?.resumen.subtotal}`
                       : "- - -"}
                   </span>
                 </div>
@@ -293,7 +310,7 @@ export default function MiCarrito() {
                   <span className="block text-xl">Costo de envío</span>
                   <span className="block">
                     {carrito?.resumen?.costo_de_envio
-                      ? `MXN ${carrito?.resumen.costo_de_envio || 0}`
+                      ? `MXN ${carrito?.resumen.costo_de_envio}`
                       : "- - -"}
                   </span>
                 </div>
@@ -302,7 +319,7 @@ export default function MiCarrito() {
                   <span className="block font-bold text-xl">Total</span>
                   <span className="block">
                     {carrito?.resumen?.total
-                      ? `MXN ${carrito?.resumen.total || 0}`
+                      ? `MXN ${carrito?.resumen.total}`
                       : "- - -"}
                   </span>
                 </div>

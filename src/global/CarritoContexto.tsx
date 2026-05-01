@@ -67,9 +67,9 @@ export function ProveedorCarrito({
     if (!usuario?.id) {
       setCarrito(undefined);
       idDireccionRef.current = undefined;
+    } else {
+      obtenerCarrito(idDireccionRef.current);
     }
-
-    console.log(carrito);
   }, [usuario?.id]);
 
   const recargarCarrito = async (
@@ -84,7 +84,6 @@ export function ProveedorCarrito({
       mostrarNotificacion,
     );
     if (datos) setCarrito(datos);
-    console.log(carrito);
   };
 
   const obtenerCarrito = async (
