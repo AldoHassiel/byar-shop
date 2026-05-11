@@ -58,6 +58,8 @@ export default function ModalDirecciones({
   const [ciudades, setCiudades] = useState<string[]>([]);
   const [colonias, setColonias] = useState<string[]>([]);
 
+  const [cargandoInfoCP, setCargandoInfoCP] = useState(false);
+
   const manejador = async () => {
     setCargando(true);
 
@@ -123,21 +125,48 @@ export default function ModalDirecciones({
   };
 
   useEffect(() => {
-    if (!codigoPostal || codigoPostal.length < 5) return;
+    if (!codigoPostal || codigoPostal.length < 5) {
+      setEstados([]);
+      setMunicipios([]);
+      setCiudades([]);
+      setColonias([]);
+
+      setEstado("");
+      setMunicipio("");
+      setCiudad("");
+      setColonia("");
+
+      return;
+    }
 
     const tiempoEspera = setTimeout(async () => {
+      setCargandoInfoCP(true);
       const info = await obtenerInfoCP(codigoPostal);
-      if (info) {
-        setEstados(info.estados);
-        setMunicipios(info.municipios);
-        setCiudades(info.ciudades);
-        setColonias(info.colonias);
+      setCargandoInfoCP(false);
 
-        setEstado((prev) => (prev || info.estados[0]) ?? "");
-        setMunicipio((prev) => (prev || info.municipios[0]) ?? "");
-        setCiudad((prev) => (prev || info.ciudades[0]) ?? "");
-        setColonia((prev) => (prev || info.colonias[0]) ?? "");
+      if (!info || info.estados.length === 0) {
+        setEstados([]);
+        setMunicipios([]);
+        setCiudades([]);
+        setColonias([]);
+
+        setEstado("");
+        setMunicipio("");
+        setCiudad("");
+        setColonia("");
+
+        return;
       }
+
+      setEstados(info.estados);
+      setMunicipios(info.municipios);
+      setCiudades(info.ciudades);
+      setColonias(info.colonias);
+
+      setEstado(info.estados[0] ?? "");
+      setMunicipio(info.municipios[0] ?? "");
+      setCiudad(info.ciudades[0] ?? "");
+      setColonia(info.colonias[0] ?? "");
     }, 200);
 
     return () => clearTimeout(tiempoEspera);
@@ -230,6 +259,7 @@ export default function ModalDirecciones({
                     type="text"
                     value={codigoPostal}
                     onChange={(e) => setCodigoPostal(e.target.value)}
+                    maxLength={5}
                   />
                 </Field>
                 <div className="flex gap-2">
@@ -247,10 +277,16 @@ export default function ModalDirecciones({
                       disabled={codigoPostal.trim() == ""}
                     >
                       <ComboboxInput
+                        value={estado}
+                        onChange={(e) => setEstado(e.target.value)}
                         placeholder={
                           codigoPostal.trim() === ""
                             ? "Ingresa un CP"
-                            : "Selecciona un estado"
+                            : cargandoInfoCP
+                              ? "Buscando información..."
+                              : estados.length === 0
+                                ? "Escribe un estado"
+                                : "Selecciona un estado"
                         }
                       />
                       <ComboboxContent>
@@ -283,10 +319,16 @@ export default function ModalDirecciones({
                       disabled={codigoPostal.trim() == ""}
                     >
                       <ComboboxInput
+                        value={municipio}
+                        onChange={(e) => setMunicipio(e.target.value)}
                         placeholder={
                           codigoPostal.trim() === ""
                             ? "Ingresa un CP"
-                            : "Selecciona un municipio"
+                            : cargandoInfoCP
+                              ? "Buscando información..."
+                              : estados.length === 0
+                                ? "Escribe un municipio"
+                                : "Selecciona un municipio"
                         }
                       />
                       <ComboboxContent>
@@ -320,10 +362,16 @@ export default function ModalDirecciones({
                     disabled={codigoPostal.trim() == ""}
                   >
                     <ComboboxInput
+                      value={ciudad}
+                      onChange={(e) => setCiudad(e.target.value)}
                       placeholder={
                         codigoPostal.trim() === ""
                           ? "Ingresa un CP"
-                          : "Selecciona una ciudad"
+                          : cargandoInfoCP
+                            ? "Buscando información..."
+                            : estados.length === 0
+                              ? "Escribe una ciudad"
+                              : "Selecciona una ciudad"
                       }
                     />
                     <ComboboxContent>
@@ -356,10 +404,16 @@ export default function ModalDirecciones({
                     disabled={codigoPostal.trim() == ""}
                   >
                     <ComboboxInput
+                      value={colonia}
+                      onChange={(e) => setColonia(e.target.value)}
                       placeholder={
                         codigoPostal.trim() === ""
                           ? "Ingresa un CP"
-                          : "Selecciona una colonia"
+                          : cargandoInfoCP
+                            ? "Buscando información..."
+                            : estados.length === 0
+                              ? "Escribe una colonia"
+                              : "Selecciona una colonia"
                       }
                     />
                     <ComboboxContent>
